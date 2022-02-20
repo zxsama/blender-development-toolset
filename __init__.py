@@ -62,11 +62,12 @@ class UI_OT_switch(bpy.types.Operator):
 class UI_OT_OpenAddonPath(bpy.types.Operator):
     bl_idname = 'wm.open_addon_path'
     bl_label = 'open user addon folder'
-    bl_description = "打开用户插件文件夹"
+    bl_description = "打开当前插件所在的插件文件夹"
 
     def execute(self, context):
         
-        addon_path = bpy.utils.script_path_user() + r"\addons"
+        # addon_path = bpy.utils.script_path_user() + r"\addons"
+        addon_path = os.path.dirname(os.path.dirname(__file__))
         bpy.ops.wm.path_open(filepath = addon_path)
         
         # try:
@@ -177,7 +178,8 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
         blender_path = Process(blender_PID).exe()
 
         # open and kill
-        save_path = bpy.utils.script_path_user() + r"\addons\DevelopmentToolset\saved\temp.blend"
+        # save_path = bpy.utils.script_path_user() + r"\addons\DevelopmentToolset\saved\temp.blend"
+        save_path = os.path.join(os.path.dirname(__file__), r"saved\temp.blend")
         if os.path.exists(save_path):
             os.remove(save_path)
         bpy.ops.wm.save_as_mainfile(filepath = save_path, check_existing = False , copy = True)
