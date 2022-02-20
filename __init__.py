@@ -152,10 +152,10 @@ class UI_OT_ReloadAddon(bpy.types.Operator):
 
 
 '''
-    关闭当前blender窗口，基于当前blender窗口路径打开新的blender窗口
+    保存当前工作区域, 基于当前blender窗口路径打开, 保存的blender文件
 '''
-class UI_OT_RestartBlender(bpy.types.Operator):
-    bl_idname = "wm.restart_blender"
+class UI_OT_RestartSavedBlender(bpy.types.Operator):
+    bl_idname = "wm.restart_saved_blender"
     bl_label = "restart blender"
     bl_description = '保存当前工作区域, 并重启blender\n注意: 会改变工作路径'
     bl_options = {'REGISTER'}
@@ -194,7 +194,46 @@ class UI_OT_RestartBlender(bpy.types.Operator):
         region = context.region
         if region.alignment == 'RIGHT':
             self.layout.operator(
-                operator=UI_OT_RestartBlender.bl_idname, icon='X', text='')
+                operator=UI_OT_RestartSavedBlender.bl_idname, icon='X', text='')
+
+  
+'''
+    关闭当前blender窗口, 基于当前blender窗口路径打开新的blender窗口
+'''
+class UI_OT_RestartBlender(bpy.types.Operator):
+    bl_idname = "wm.restart_blender"
+    bl_label = "restart blender"
+    bl_description = '重启blender\n注意: 会强行终止进程并重启'
+    bl_options = {'REGISTER'}
+
+    def execute(self, context):
+        try:
+            # pywin32
+            import win32gui
+            import win32api
+            import win32process
+            from psutil import Process
+        except ImportError:
+            Install_Modul(self, "pywin32", "psutil")
+            return {'CANCELLED'}
+
+        # get blender.exe path
+        blender_handle = win32gui.GetForegroundWindow()
+        _, blender_PID = win32process.GetWindowThreadProcessId(blender_handle)
+        blender_path = Process(blender_PID).exe()
+
+        # os.system("\"" + blender_path + "\"")
+        # open and kill
+        win32api.ShellExecute(0, 'open', blender_path, '', '', 1)
+        os.kill(blender_PID, 0)
+        self.report({'INFO'}, "重启Blender")
+        return {'FINISHED'}
+
+    def draw(self, context):
+        region = context.region
+        if region.alignment == 'RIGHT':
+            self.layout.operator(
+                operator=UI_OT_RestartBlender.bl_idname, icon='CANCEL', text='')
 
 
 '''
@@ -330,6 +369,7 @@ classes = (
     UI_OT_OpenAddonPath,
     UI_OT_ReloadAddon,
     UI_OT_RestartBlender,
+    UI_OT_RestartSavedBlender,
     UI_OT_ConsoleToggle
 )
 
