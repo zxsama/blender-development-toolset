@@ -3,8 +3,8 @@
 bl_info = {
     "name": "Development Toolset",
     "author": "MIZI",
-    "version": (0, 1, 2),
-    "blender": (3, 0, 0),
+    "version": (0, 2, 0),
+    "blender": (3, 2, 1),
     "location": "right topbar",
     "description": "开发用快捷按钮",
     "wiki_url": "https://github.com/zxsama/blender-development-toolset",
