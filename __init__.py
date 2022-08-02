@@ -101,4 +101,4 @@ def unregister():
         bpy.types.TOPBAR_HT_upper_bar.remove(cls.draw)
     # bpy.utils.unregister_class(DemoPreferences)   
     
-    del bpy.types.Scene.dev_prop
+    del bpy.types.Scene.mz_custom_prop
