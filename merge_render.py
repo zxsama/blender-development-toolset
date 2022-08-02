@@ -67,7 +67,7 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
         try:
             import cv2
         except ImportError:
-            install_modul("opencv-python")
+            install_modul(self, "opencv-python")
         bpy.ops.render.render(animation=True)
         scene = context.scene
         custom_prop = scene.mz_custom_prop
