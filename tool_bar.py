@@ -2,11 +2,19 @@ import bpy
 import os
 from .functions import install_modul
 
+bar_button = {
+    'UI_OT_Switch_ZH_EN':"中英文切换",
+    'UI_OT_OpenAddonPath':"打开插件路径",
+    'UI_OT_ReloadAddon':"重新载入插件(仅__init__)",
+    'UI_OT_RestartSavedBlender':"保存并重新启动bl",
+    'UI_OT_RestartBlender':"不保存重启bl",
+    'UI_OT_ConsoleToggle':"打开控制台",
+}
 
 '''
     中英文切换
 '''
-class UI_OT_switch(bpy.types.Operator):
+class UI_OT_Switch_ZH_EN(bpy.types.Operator):
     bl_idname = 'wm.zh_en_switch'
     bl_label = 'zh/en Switch'
     bl_description = "中英文切换"
@@ -23,8 +31,10 @@ class UI_OT_switch(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
-            self.layout.operator(operator=UI_OT_switch.bl_idname,
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[0]
+        if region.alignment == 'RIGHT' and enable_bar:
+            self.layout.operator(operator=UI_OT_Switch_ZH_EN.bl_idname,
                                  icon='WORDWRAP_ON', text=context.preferences.view.language)
 
 
@@ -97,7 +107,9 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[1]
+        if region.alignment == 'RIGHT' and enable_bar:
             self.layout.operator(
                 operator=UI_OT_OpenAddonPath.bl_idname, icon='WORKSPACE', text='')
 
@@ -119,7 +131,9 @@ class UI_OT_ReloadAddon(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[2]
+        if region.alignment == 'RIGHT' and enable_bar:
             self.layout.operator(
                 operator=UI_OT_ReloadAddon.bl_idname, icon='FILE_REFRESH', text='')
 
@@ -166,7 +180,9 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[3]
+        if region.alignment == 'RIGHT' and enable_bar:
             self.layout.operator(
                 operator=UI_OT_RestartSavedBlender.bl_idname, icon='X', text='')
 
@@ -205,7 +221,9 @@ class UI_OT_RestartBlender(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[4]
+        if region.alignment == 'RIGHT' and enable_bar:
             self.layout.operator(
                 operator=UI_OT_RestartBlender.bl_idname, icon='CANCEL', text='')
 
@@ -273,6 +291,8 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
 
     def draw(self, context):
         region = context.region
-        if region.alignment == 'RIGHT':
+        custom_prop = context.scene.mz_custom_prop
+        enable_bar = custom_prop.enable_bar_buttons[5]
+        if region.alignment == 'RIGHT' and enable_bar:
             self.layout.operator(
                 operator=UI_OT_ConsoleToggle.bl_idname, icon='CONSOLE', text='')

@@ -31,8 +31,8 @@ class MZ_PT_MergeRender(bpy.types.Panel):
                 
         flow = col.grid_flow(columns=0, align=True)
         flow.scale_y = 1.5
-        meg_rend = flow.operator(MZ_OT_MergeRenderResult.bl_idname, text="合并输出", icon='RENDER_ANIMATION')
-        meg_rend.single_pix_size = custom_prop.single_pix_size
+        flow.operator(MZ_OT_MergeRenderResult.bl_idname, text="合并输出", icon='RENDER_ANIMATION')
+        
         
         
 class MZ_OT_MergeRenderResult(bpy.types.Operator):
@@ -41,12 +41,12 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
     bl_description = '渲染并合并序列帧为一张图'
     bl_options = {'REGISTER'}
     
-    single_pix_size: bpy.props.IntProperty(
-        name='single_pix_size',
-        description="单张图片裁剪大小",
-        default=130,
-        min=0,
-    )
+    # single_pix_size: bpy.props.IntProperty(
+    #     name='single_pix_size',
+    #     description="单张图片裁剪大小",
+    #     default=130,
+    #     min=0,
+    # )
     
     def getboundingrect(self, gary_img, cv2):
         """获取传入灰度图像的边界
@@ -70,12 +70,13 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
             install_modul("opencv-python")
         bpy.ops.render.render(animation=True)
         scene = context.scene
+        custom_prop = scene.mz_custom_prop
         filepath = bpy.path.abspath(scene.render.filepath)
         filepath = os.path.abspath(filepath)
         
         pics = os.listdir(filepath)
-        self.single_pix_size = 130
-        result_pic = np.zeros((self.single_pix_size, 0, 4), np.uint8)
+        single_pix_size = custom_prop.single_pix_size
+        result_pic = np.zeros((single_pix_size, 0, 4), np.uint8)
         
         for pic in pics:
             pic_path = os.path.join(filepath, pic)
@@ -92,9 +93,9 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
                 
             x, y, w, h = self.getboundingrect(img_gray, cv2)
             img = img[y:y+h, x:x+w]
-            border_y = (self.single_pix_size - h)/2
-            border_x = (self.single_pix_size - w)/2
-            if self.single_pix_size<h or self.single_pix_size<w:
+            border_y = (single_pix_size - h)/2
+            border_x = (single_pix_size - w)/2
+            if single_pix_size<h or single_pix_size<w:
                 self.report({'WARINING'}, "too small in size.")
                 return {'FINISHED'}
             img = cv2.copyMakeBorder(img,

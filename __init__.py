@@ -18,9 +18,9 @@ import bpy
 from .lib import addon_updater_ops
 from . import reg_classes as rc
 
-
+"""
 class DemoPreferences(bpy.types.AddonPreferences):
-    """Demo bare-bones preferences"""
+    /"/"/"Demo bare-bones preferences/"/"/"
     bl_idname = __package__
 
     # Addon updater preferences.
@@ -78,6 +78,7 @@ class DemoPreferences(bpy.types.AddonPreferences):
         # col.scale_y = 2
         # ops = col.operator("wm.url_open","Open webpage ")
         # ops.url=addon_updater_ops.updater.website
+"""
 
 def register():
     addon_updater_ops.register(bl_info)
@@ -88,8 +89,8 @@ def register():
     
     bpy.types.Scene.mz_custom_prop = bpy.props.PointerProperty(type = rc.MZ_CustomProps)
     
-    addon_updater_ops.make_annotations(DemoPreferences)
-    bpy.utils.register_class(DemoPreferences)   
+    # addon_updater_ops.make_annotations(DemoPreferences)
+    # bpy.utils.register_class(DemoPreferences)   
 
 
 def unregister():
@@ -98,6 +99,6 @@ def unregister():
         bpy.utils.unregister_class(cls)
     for cls in rc.bar_classes:  
         bpy.types.TOPBAR_HT_upper_bar.remove(cls.draw)
-    bpy.utils.unregister_class(DemoPreferences)   
+    # bpy.utils.unregister_class(DemoPreferences)   
     
     del bpy.types.Scene.dev_prop
