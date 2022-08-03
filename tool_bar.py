@@ -2,15 +2,6 @@ import bpy
 import os
 from .functions import install_modul
 
-bar_button = {
-    'UI_OT_Switch_ZH_EN':"中英文切换",
-    'UI_OT_OpenAddonPath':"打开插件路径",
-    'UI_OT_ReloadAddon':"重新载入插件(仅__init__)",
-    'UI_OT_RestartSavedBlender':"保存并重新启动bl",
-    'UI_OT_RestartBlender':"不保存重启bl",
-    'UI_OT_ConsoleToggle':"打开控制台",
-}
-
 '''
     中英文切换
 '''
@@ -28,14 +19,6 @@ class UI_OT_Switch_ZH_EN(bpy.types.Operator):
         else:
             context.preferences.view.language = 'en_US'
         return {'FINISHED'}
-
-    def draw(self, context):
-        region = context.region
-        custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[0]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(operator=UI_OT_Switch_ZH_EN.bl_idname,
-                                 icon='WORDWRAP_ON', text=context.preferences.view.language)
 
 
 '''
@@ -105,14 +88,6 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
 
         return {'FINISHED'}
 
-    def draw(self, context):
-        region = context.region
-        custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[1]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(
-                operator=UI_OT_OpenAddonPath.bl_idname, icon='WORKSPACE', text='')
-
 
 '''
     刷新插件，不会刷新已导入模块的全局字典
@@ -128,14 +103,6 @@ class UI_OT_ReloadAddon(bpy.types.Operator):
         result = bpy.ops.script.reload()
         self.report({'INFO'}, "插件刷新完成")
         return {'FINISHED'}
-
-    def draw(self, context):
-        region = context.region
-        custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[2]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(
-                operator=UI_OT_ReloadAddon.bl_idname, icon='FILE_REFRESH', text='')
 
 
 '''
@@ -178,14 +145,6 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
         bpy.ops.wm.quit_blender()
         return {'FINISHED'}
 
-    def draw(self, context):
-        region = context.region
-        custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[3]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(
-                operator=UI_OT_RestartSavedBlender.bl_idname, icon='X', text='')
-
   
 '''
     关闭当前blender窗口, 基于当前blender窗口路径打开新的blender窗口
@@ -218,14 +177,6 @@ class UI_OT_RestartBlender(bpy.types.Operator):
         os.kill(blender_PID, 0)
         self.report({'INFO'}, "重启Blender")
         return {'FINISHED'}
-
-    def draw(self, context):
-        region = context.region
-        custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[4]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(
-                operator=UI_OT_RestartBlender.bl_idname, icon='CANCEL', text='')
 
 
 '''
@@ -287,12 +238,42 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
         hWnd_all_list.clear()
         console_handle_list.clear()
 
-        return {'FINISHED'}
+        return {'FINISHED'}            
 
+
+bar_button = {
+    UI_OT_ConsoleToggle.bl_idname: ["打开控制台",
+                                    "CONSOLE",
+                                    ""],
+    UI_OT_RestartSavedBlender.bl_idname: ["保存并重新启动工程(会更改工程位置)",
+                                          "X",
+                                          ""],
+    UI_OT_RestartBlender.bl_idname: ["不保存重启bl",
+                                     "CANCEL",
+                                     ""],
+    UI_OT_ReloadAddon.bl_idname: ["重新载入插件(仅__init__)",
+                                  "FILE_REFRESH",
+                                  ""],
+    UI_OT_OpenAddonPath.bl_idname: ["打开插件路径",
+                                    "WORKSPACE",
+                                    ""],
+    UI_OT_Switch_ZH_EN.bl_idname: ["中英文切换",
+                                   "WORDWRAP_ON",
+                                   ""],
+}
+
+class MZ_OT_BarUI(bpy.types.Header):
+    bl_space_type = 'TOPBAR'
+    
     def draw(self, context):
         region = context.region
         custom_prop = context.scene.mz_custom_prop
-        enable_bar = custom_prop.enable_bar_buttons[5]
-        if region.alignment == 'RIGHT' and enable_bar:
-            self.layout.operator(
-                operator=UI_OT_ConsoleToggle.bl_idname, icon='CONSOLE', text='')
+        bar_button[UI_OT_Switch_ZH_EN.bl_idname][2] = context.preferences.view.language
+        
+        addon_name = os.path.basename(os.path.dirname(__file__))
+        prefs = context.preferences.addons[addon_name].preferences
+        
+        enable_bars = prefs.enable_bar_buttons
+        for idx, (bl_id, data) in enumerate(bar_button.items()):
+            if enable_bars[idx] and region.alignment == 'RIGHT':
+                self.layout.operator(operator=bl_id, icon=data[1], text=data[2])

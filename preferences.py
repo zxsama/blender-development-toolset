@@ -6,6 +6,20 @@ class MZ_Preferences(bpy.types.AddonPreferences):
     # this must match the add-on name, use '__package__'
     # when defining this in a submodule of a python package.
     bl_idname = os.path.basename(os.path.dirname(__file__))
+    
+    enable_bar_buttons: bpy.props.BoolVectorProperty(
+        name="enable_bar_buttons", 
+        size=len(bar_button),
+        default=[True]*len(bar_button), 
+        description="是否开启按钮的bool数组"
+        # update=update_bar_ops,
+    )
+    
+    def update_bar_ops(self, context):
+        for index, (cls, _) in enumerate(bar_button.items()):
+            if not self.enable_bar_buttons[index]:
+                ...
+                # TODO: unregist class         
 
     def draw(self, context):
         layout = self.layout
@@ -15,8 +29,6 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         box = col.box()
         box.label(text="开启的快捷按键:")
         sub_flow = box.grid_flow(columns=2, align=True)
-        scene = context.scene
-        custom_prop = scene.mz_custom_prop
         for index, (key, value) in enumerate(bar_button.items()):
-            sub_flow.prop(custom_prop, "enable_bar_buttons", index=index, text=value)
+            sub_flow.prop(self, "enable_bar_buttons", index=index, text=value[0])
             
