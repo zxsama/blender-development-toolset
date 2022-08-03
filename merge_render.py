@@ -81,12 +81,13 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
         for pic in pics:
             pic_path = os.path.join(filepath, pic)
             print(pic_path)
-            img = cv2.imread(pic_path, cv2.IMREAD_UNCHANGED)
+            # img = cv2.imread(pic_path, cv2.IMREAD_UNCHANGED)
+            img = cv2.imdecode(np.fromfile(pic_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED) # 用于支持中文路径
             if len(cv2.split(img)) > 3:
                 b, g, r, a = cv2.split(img)
                 img_gray = a.astype(np.uint8)
             else:
-                self.report({'WARINING'}, "no alpha")
+                self.report({'WARNING'}, "no alpha")
                 return {'FINISHED'}
                 # img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 # TODO:
@@ -96,7 +97,7 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
             border_y = (single_pix_size - h)/2
             border_x = (single_pix_size - w)/2
             if single_pix_size<h or single_pix_size<w:
-                self.report({'WARINING'}, "too small in size.")
+                self.report({'WARNING'}, "merge size less than {bsize}.".format(bsize=max(h,w)))
                 return {'FINISHED'}
             img = cv2.copyMakeBorder(img,
                                     int(ceil(border_y)),
@@ -111,7 +112,8 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
         ftime = time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))
         tar_redr = os.path.dirname(filepath)
         tar_redr = os.path.join(tar_redr, "comp_"+ftime+".png")
-        cv2.imwrite(tar_redr,result_pic)
+        # cv2.imwrite(tar_redr,result_pic)
+        cv2.imencode('.png', result_pic)[1].tofile(tar_redr) # 用于支持中文路径
         
         return self.execute(context)
     
