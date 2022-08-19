@@ -25,19 +25,22 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         sub_flow = sub_box.grid_flow(columns=0, align=True)
         sub_flow.use_property_split = True
         sub_flow.label(text="节点组批量替换与属性修改(仅shader)")
-        sub_flow.prop(custom_prop, "used_nodegrp_name", text="Node Group")
+        sub_flow.prop(custom_prop, "used_nodegrp_name", text="Node Group Name")
         
         sub_flow = sub_box.box()
+        sub_flow = sub_flow.grid_flow(columns=0, align=True)
         sub_flow.label(text="Attribute Name:")
         sub_flow.prop(custom_prop, "nodegrp_property_name", text="")
         grp_type = custom_prop.nodegrp_value_type
         value_text = custom_prop.nodegrp_property_name + " Value:"
-        sub_flow.label(text=value_text)
         if grp_type == "VALUE":
+            sub_flow.label(text=value_text)
             sub_flow.prop(custom_prop, "nodegrp_value_float", text="")
         elif grp_type == "VECTOR":
+            sub_flow.label(text=value_text)
             sub_flow.prop(custom_prop, "nodegrp_value_vector", text="")
         elif grp_type == "RGBA":
+            sub_flow.label(text=value_text)
             sub_flow.prop(custom_prop, "nodegrp_value_color", text="")
         sub_flow = sub_flow.grid_flow(columns=0, align=True)
         sub_flow.scale_y = 1.5
@@ -59,6 +62,7 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         sub_flow.prop(custom_prop, 'global_param_01_name', text="")
         sub_flow.prop(custom_prop, 'global_float_param_01', text="")
 
+        # 材质内value显示
         obj = context.object
         if obj:
             mat_slots = obj.material_slots
