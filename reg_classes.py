@@ -14,7 +14,6 @@ from .material_show_panel import (MAT_PT_MaterialShow,
                                   )
 
 from .merge_render import(MZ_PT_MergeRender,
-                          MZ_OT_MergeRenderResult,
                           MZ_OT_MergeRenderResultResponsive,
                           )
 from .custom_props import MZ_CustomProps

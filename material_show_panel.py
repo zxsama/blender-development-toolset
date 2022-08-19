@@ -7,7 +7,7 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'MZ Toolset'
-    bl_label = '材质参数'
+    bl_label = '材质相关'
     bl_options = {'HEADER_LAYOUT_EXPAND'}
 
     def draw(self, context):
@@ -24,7 +24,7 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         sub_box = col.box()
         sub_flow = sub_box.grid_flow(columns=0, align=True)
         sub_flow.use_property_split = True
-        sub_flow.label(text="节点组批量替换与属性修改(仅shader)")
+        sub_flow.label(text="节点组批量替换与属性修改(仅SHADER)")
         sub_flow.prop(custom_prop, "used_nodegrp_name", text="Node Group Name")
         
         sub_flow = sub_box.box()
@@ -57,7 +57,7 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         # 材质内属性批量修改(仅value)
         sub_box = col.box()
         sub_flow = sub_box.box()
-        sub_flow.label(text="材质内属性批量修改(仅value)")
+        sub_flow.label(text="全局材质内属性批量修改(仅value)")
         sub_flow = sub_flow.row(align=True)
         sub_flow.prop(custom_prop, 'global_param_01_name', text="")
         sub_flow.prop(custom_prop, 'global_float_param_01', text="")
@@ -107,7 +107,7 @@ class MZ_OT_ChangeNodegroupProperty(bpy.types.Operator):
     
     def change_nodegrp_attribute(self, nodes, nodegrp, property_name, value):
         for node in nodes:
-            if node.type=="GROUP" and node.node_tree.name==nodegrp.name:
+            if node.type=="GROUP" and node.node_tree and node.node_tree.name==nodegrp.name:
                 node.inputs[property_name].default_value = value
                 self.changed_count += 1
         
