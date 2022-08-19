@@ -1,4 +1,5 @@
 import bpy
+from bpy.types import bpy_prop_collection
 
 def install_modul(self, *modul_name):
     import os
@@ -12,3 +13,16 @@ def install_modul(self, *modul_name):
         subprocess.call([python_path, "-m", "pip", "install", modul])
     print("\n安装结束.\n" + "重启blender后生效!\n" * 3 + "-" * 30)
     self.report({'WARNING'}, "请手动重启blender!")
+
+
+def collection_search(ID):
+    def users(col):
+        ret = tuple(repr(o) for o in col if o.user_of_id(ID))
+        return ret if ret else None
+    return filter(None, (
+        users(getattr(bpy.data, p))
+        for p in dir(bpy.data)
+        if isinstance(
+            getattr(bpy.data, p, None),
+            bpy_prop_collection
+        )))

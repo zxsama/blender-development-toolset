@@ -23,7 +23,9 @@ class MZ_PT_MergeRender(bpy.types.Panel):
         col = layout.column(align=True)        
         flow = col.grid_flow(columns=0, align=True)
         flow.prop(scene.render, 'filepath', text="")
-        flow.prop(custom_prop, 'single_pix_size', text="merge size")
+        flow = col.grid_flow(columns=2, align=True)
+        flow.prop(custom_prop, 'subpix_size_x', text="X subsize")
+        flow.prop(custom_prop, 'subpix_size_y', text="Y subsize")
 
         flow = col.grid_flow(columns=2, align=True)
         flow.prop(scene, 'frame_start', text="start")
@@ -40,8 +42,8 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
     bl_description = '渲染并合并序列帧为一张图'
     bl_options = {'REGISTER'}
     
-    # single_pix_size: bpy.props.IntProperty(
-    #     name='single_pix_size',
+    # subpix_size_y: bpy.props.IntProperty(
+    #     name='subpix_size_y',
     #     description="单张图片裁剪大小",
     #     default=130,
     #     min=0,
@@ -74,8 +76,8 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
         filepath = os.path.abspath(filepath)
         
         pics = os.listdir(filepath)
-        single_pix_size = custom_prop.single_pix_size
-        result_pic = np.zeros((single_pix_size, 0, 4), np.uint8)
+        subpix_size_y = custom_prop.subpix_size_y
+        result_pic = np.zeros((subpix_size_y, 0, 4), np.uint8)
         
         for pic in pics:
             pic_path = os.path.join(filepath, pic)
@@ -93,9 +95,9 @@ class MZ_OT_MergeRenderResult(bpy.types.Operator):
                 
             x, y, w, h = self.getboundingrect(img_gray, cv2)
             img = img[y:y+h, x:x+w]
-            border_y = (single_pix_size - h)/2
-            border_x = (single_pix_size - w)/2
-            if single_pix_size<h or single_pix_size<w:
+            border_y = (subpix_size_y - h)/2
+            border_x = (subpix_size_y - w)/2
+            if subpix_size_y<h or subpix_size_y<w:
                 self.report({'WARNING'}, "merge size less than {bsize}.".format(bsize=max(h,w)))
                 return {'FINISHED'}
             img = cv2.copyMakeBorder(img,
@@ -159,8 +161,9 @@ class MZ_OT_MergeRenderResultResponsive(bpy.types.Operator):
         filepath = os.path.abspath(filepath)
         
         pics = os.listdir(filepath)
-        single_pix_size = custom_prop.single_pix_size
-        result_pic = np.zeros((single_pix_size, 0, 4), np.uint8)
+        subpix_size_y = custom_prop.subpix_size_y
+        subpix_size_x = custom_prop.subpix_size_x
+        result_pic = np.zeros((subpix_size_y, 0, 4), np.uint8)
         
         for pic in pics:
             pic_path = os.path.join(filepath, pic)
@@ -176,12 +179,20 @@ class MZ_OT_MergeRenderResultResponsive(bpy.types.Operator):
                 # TODO:
                 
             x, y, w, h = self.getboundingrect(img_gray, cv2)
-            img = img[y:y+h, x:x+w]
-            border_y = (single_pix_size - h)/2
-            border_x = (single_pix_size - w)/2
-            if single_pix_size<h or single_pix_size<w:
-                self.report({'WARNING'}, "merge size less than {bsize}.".format(bsize=max(h,w)))
+            
+            info_report = False
+            if subpix_size_y<h:
+                self.report({'WARNING'}, "subpixel size y less than {bsize}.".format(bsize=h))
+                info_report = True
+            elif subpix_size_x<w:
+                self.report({'WARNING'}, "subpixel size x less than {bsize}.".format(bsize=w))
+                info_report = True
+            if info_report:
                 return {'FINISHED'}
+
+            img = img[y:y+h, x:x+w]
+            border_y = (subpix_size_y - h)/2
+            border_x = (subpix_size_x - w)/2
             img = cv2.copyMakeBorder(img,
                                     int(ceil(border_y)),
                                     int(floor(border_y)),

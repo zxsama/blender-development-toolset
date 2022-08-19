@@ -262,7 +262,7 @@ bar_button = {
                                    ""],
 }
 
-class MZ_OT_BarUI(bpy.types.Header):
+class MZ_HT_BarUI(bpy.types.Header):
     bl_space_type = 'TOPBAR'
     
     def draw(self, context):
