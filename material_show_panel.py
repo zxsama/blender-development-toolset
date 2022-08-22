@@ -7,7 +7,7 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = 'MZ Toolset'
-    bl_label = '材质相关'
+    bl_label = '材质管理'
     bl_options = {'HEADER_LAYOUT_EXPAND'}
 
     def draw(self, context):
@@ -16,19 +16,19 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         layout.use_property_split = False
         layout.use_property_decorate = False
         col = layout.column(align=True)
-        # flow = col.grid_flow(columns=0, align=True)
+        # flow = col.column_flow(columns=0, align=True)
         scene = context.scene
         custom_prop = scene.mz_custom_prop
         
         # 节点组批量替换与属性修改(仅shader)
         sub_box = col.box()
-        sub_flow = sub_box.grid_flow(columns=0, align=True)
+        sub_flow = sub_box.column_flow(columns=0, align=True)
         sub_flow.use_property_split = True
-        sub_flow.label(text="节点组批量替换与属性修改(仅SHADER)")
+        sub_flow.label(text="节点组批量替换与属性修改|仅SHADER")
         sub_flow.prop(custom_prop, "used_nodegrp_name", text="Node Group Name")
         
         sub_flow = sub_box.box()
-        sub_flow = sub_flow.grid_flow(columns=0, align=True)
+        sub_flow = sub_flow.column_flow(columns=0, align=True)
         sub_flow.label(text="Attribute Name:")
         sub_flow.prop(custom_prop, "nodegrp_property_name", text="")
         grp_type = custom_prop.nodegrp_value_type
@@ -42,55 +42,71 @@ class MAT_PT_MaterialShow(bpy.types.Panel):
         elif grp_type == "RGBA":
             sub_flow.label(text=value_text)
             sub_flow.prop(custom_prop, "nodegrp_value_color", text="")
-        sub_flow = sub_flow.grid_flow(columns=0, align=True)
+        sub_flow = sub_flow.column_flow(columns=0, align=True)
         sub_flow.scale_y = 1.5
-        sub_flow.operator(MZ_OT_ChangeNodegroupProperty.bl_idname, text="全局修改")
+        sub_flow.operator(MZ_OT_ChangeNodegroupProperty.bl_idname, text="节点组属性修改|全局")
         
-        sub_flow = sub_box.box()
-        sub_flow = sub_flow.grid_flow(columns=0, align=True)
+        sub_box = sub_box.box()
+        sub_flow = sub_box.column_flow(columns=0, align=True)
         sub_flow.label(text="Repalce NodeGroup Name:")
         sub_flow.prop(custom_prop, "replace_nodegrp_name", text="")
-        sub_flow = sub_flow.grid_flow(columns=0, align=True)
+        sub_flow = sub_flow.column_flow(columns=0, align=True)
         sub_flow.scale_y = 1.5
-        sub_flow.operator(MZ_OT_ReplaceNodegroup.bl_idname, text="全局替换")
+        sub_flow.operator(MZ_OT_ReplaceNodegroup.bl_idname, text="节点组替换|全局")
         
         # 材质内属性批量修改(仅value)
         sub_box = col.box()
-        sub_flow = sub_box.box()
-        sub_flow.label(text="全局材质内属性批量修改(仅value)")
-        sub_flow = sub_flow.row(align=True)
+        sub_box = sub_box.column_flow(columns=0, align=True)
+        sub_box.label(text="全局材质属性修改|仅value")
+        sub_box = sub_box.box()
+        sub_flow = sub_box.column_flow(columns=0, align=True)
         sub_flow.prop(custom_prop, 'global_param_01_name', text="")
         sub_flow.prop(custom_prop, 'global_float_param_01', text="")
 
-        # 材质内value显示
+        # 材质内value显示(有label的)
         obj = context.object
+        sub_box = col.box()
+        sub_box = sub_box.column_flow(columns=0, align=True)
+        sub_box.label(text="材质参数")        
         if obj:
             mat_slots = obj.material_slots
             for slot in mat_slots:
                 mat = slot.material
-                slot_label = "{obj_name} | {mat_name} | slot{slidx}".format(
-                    obj_name=obj.name, mat_name=mat.name, slidx=slot.slot_index)
-                col.label(text=slot_label)
-                flow_val = col.grid_flow(columns=0, align=True)
-                flow_rgb = col.grid_flow(columns=0, align=True)
-                flow_rgb_curve = col.grid_flow(columns=0, align=True)
+                slot_label = "{obj_name} | {mat_name} | Slot {slidx}".format(
+                    obj_name=obj.name, mat_name=mat.name, slidx=(slot.slot_index+1))
+                sub_sub_box = sub_box.box()
+                sub_sub_box = sub_sub_box.column_flow(columns=0, align=True)
+                sub_sub_box.label(text=slot_label)
+                attri_flow = sub_sub_box.column_flow(columns=0, align=True)
+                attri_flow.use_property_split = True
                 if mat:
                     ntree = mat.node_tree
                     nodes = ntree.nodes
                     for node in nodes:
                         if node.label:
                             if node.type in {'VALUE'}:
+                                flow_val = attri_flow.grid_flow(columns=0, align=True)
                                 flow_val.prop(
                                     node.outputs[0], 'default_value', text=node.label)
                             elif node.type in {'RGB'}:
+                                flow_rgb = attri_flow.grid_flow(columns=0, align=True)
                                 flow_rgb.prop(
                                     node.outputs[0], 'default_value', text=node.label)
                             elif node.type in {'CURVE_RGB'}:
-                                # input = find_node_input(node, 'Surface')
-                                # flow_rgb_curve.template_node_view(ntree, node, input)
-                                flow_rgb_curve.label(text=node.label)
-                                flow_rgb_curve.template_curve_mapping(
+                                flow_curve = attri_flow.grid_flow(columns=0, align=True)
+                                flow_curve.label(text=node.label)
+                                flow_curve.template_curve_mapping(
                                     node, 'mapping', type='COLOR')
+                            elif node.type in {'CURVE_VEC'}:
+                                flow_curve = attri_flow.grid_flow(columns=0, align=True)
+                                flow_curve.label(text=node.label)
+                                flow_curve.template_curve_mapping(
+                                    node, 'mapping', type='VECTOR')
+                            elif node.type in {'CURVE_FLOAT'}:
+                                flow_curve = attri_flow.grid_flow(columns=0, align=True)
+                                flow_curve.label(text=node.label)
+                                flow_curve.template_curve_mapping(
+                                    node, 'mapping', type='NONE')
 
 
 class MZ_OT_ChangeNodegroupProperty(bpy.types.Operator):
