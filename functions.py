@@ -11,7 +11,7 @@ def install_modul(self, *modul_name):
     print("Python Path: ", python_path)
     for modul in modul_name:
         print("-" * 30 + "\n未安装" + modul + "模块，安装中...\n")
-        subprocess.call([python_path, "-m", "pip", "install", modul])
+        subprocess.call([python_path, "-m", "pip", "install", "-I", modul])
     print("\n安装结束.\n" + "重启blender后生效!\n" * 3 + "-" * 30)
     self.report({'WARNING'}, "请手动重启blender!")
 
