@@ -1,6 +1,7 @@
 import bpy
 import os
 from .functions import install_modul
+from .lib.module_reload import reload as module_reload
 
 '''
     中英文切换
@@ -99,8 +100,10 @@ class UI_OT_ReloadAddon(bpy.types.Operator):
     bl_options = {'REGISTER'}
 
     def execute(self, context):
+        # module_reload() #TODO
         bpy.ops.preferences.addon_refresh()
-        result = bpy.ops.script.reload()
+        bpy.ops.script.reload()
+        
         self.report({'INFO'}, "插件刷新完成")
         return {'FINISHED'}
 
