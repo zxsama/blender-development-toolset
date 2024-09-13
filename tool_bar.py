@@ -1,9 +1,7 @@
 import bpy
 import os
 from .functions import install_modul, launch_blender
-
-# from .lib.module_reload import reload as module_reload
-
+from .bilingual_translator import BilingualTranslatorData
 
 class UI_OT_Switch_ZH_EN(bpy.types.Operator):
     """
@@ -17,8 +15,16 @@ class UI_OT_Switch_ZH_EN(bpy.types.Operator):
 
     def execute(self, context):
         lan = context.preferences.view.language
+        
+        # 切换双语
+        BTD = BilingualTranslatorData()
+        _, bil_mo_file = BTD.get_bilingual_mo_path()
+        lang_code = "zh_HANS"
+        if os.path.exists(bil_mo_file):
+            lang_code = BTD.locale_name
+            
         if lan == "en_US":
-            context.preferences.view.language = "zh_HANS"
+            context.preferences.view.language = lang_code
             context.preferences.view.use_translate_new_dataname = False
         else:
             context.preferences.view.language = "en_US"
