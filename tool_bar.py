@@ -218,7 +218,7 @@ class MZ_HT_BarUI(bpy.types.Header):
         bar_button = BarUI.get_bar_data()
         bar_button[UI_OT_Switch_ZH_EN.bl_idname][2] = context.preferences.view.language
 
-        addon_name = os.path.basename(os.path.dirname(__file__))
+        addon_name = __package__
         prefs = context.preferences.addons[addon_name].preferences
 
         enable_bars = prefs.enable_bar_buttons

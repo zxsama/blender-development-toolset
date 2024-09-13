@@ -16,7 +16,7 @@ bar_button = BarUI.get_bar_data()
 class MZ_Preferences(bpy.types.AddonPreferences):
     # this must match the add-on name, use '__package__'
     # when defining this in a submodule of a python package.
-    bl_idname = os.path.basename(os.path.dirname(__file__))
+    bl_idname = __package__
 
     enable_bar_buttons: bpy.props.BoolVectorProperty(
         name="enable_bar_buttons",
