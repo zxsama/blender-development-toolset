@@ -1,6 +1,13 @@
+from email.policy import default
+from re import sub
 import bpy
 import os
 from .tool_bar import BarUI
+from .bilingual_translator import (BilingualTranslatorData, 
+                           MZ_OT_GenerateBilingualTranslator, 
+                           MZ_OT_RegisterBilingualTranslator,
+                           MZ_OT_OpenBilingualWhiteList,
+                           )
 
 bar_button = BarUI.get_bar_data()
 
@@ -28,9 +35,44 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         layout = self.layout
         layout.use_property_split = False
         layout.use_property_decorate = False
-        col = layout.column(align=True)
-        box = col.box()
-        box.label(text="开启的快捷按键:")
-        sub_flow = box.grid_flow(columns=2, align=True)
+        row = layout.row()
+        row = row.split(factor=0.3)
+        box_btn_qucik = row.column(align=True)
+        box_btn_qucik.box().label(text="快捷按键开关")
+        sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
         for index, (_, value) in enumerate(bar_button.items()):
             sub_flow.prop(self, "enable_bar_buttons", index=index, text=value[0])
+        
+        bili_trans_prop = context.scene.mz_bilingual_translator_prop
+        box_trans = row.column(align=True)
+        box_trans.box().label(text="双语翻译")
+        sub_flow = box_trans.grid_flow(columns=1, align=True)
+        sub_flow.use_property_split = True
+        sub_flow.use_property_decorate = False
+        
+        bil_mo_folder, _ = BilingualTranslatorData().get_bilingual_mo_path()
+        if os.path.exists(bil_mo_folder):            
+            sub_box = sub_flow.box()
+            sub_flow = sub_box.grid_flow(columns=1, align=True)
+            sub_flow.prop(bili_trans_prop, "bilingual_lang", text="双语语言")
+            sub_flow.prop(bili_trans_prop, "custom_delimiter", text="间隔符")
+            sub_row = sub_flow.row()
+            sub_row.prop(bili_trans_prop, "is_translation_preceding", text="合并方式", expand=True)
+            sub_row = sub_flow.row()
+            
+            sub_col = sub_row.row(heading="翻译区域", align=True)
+            sub_col.prop(bili_trans_prop, "translation_section_all", text="ALL")
+            sub_col.prop(bili_trans_prop, "translation_section_node", text="节点")
+            sub_col.prop(bili_trans_prop, "translation_section_modifier", text="修改器")
+            sub_col.prop(bili_trans_prop, "translation_section_white_list", text="白名单")
+            sub_col.operator(MZ_OT_OpenBilingualWhiteList.bl_idname, text="编辑白名单")
+            
+            sub_flow.separator()
+            btn_flow = sub_flow.column(align=True)
+            btn_flow.scale_y = 1.75
+            btn_flow.operator(MZ_OT_GenerateBilingualTranslator.bl_idname, text="编译双语翻译")
+        else:
+            
+            btn_flow = sub_flow.box()
+            btn_flow.scale_y = 1.5
+            btn_flow.operator(MZ_OT_RegisterBilingualTranslator.bl_idname, text="双语翻译初始化(自动重启)")

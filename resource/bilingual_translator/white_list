@@ -1,0 +1,93 @@
+# 每行一条
+# 使用英文名称
+# 记得保存(Alt+S)
+
+# Modifier
+Generate
+Deform
+Normals
+Physics
+Unassigned
+
+# ShaderNode
+Attributes
+Shader
+
+# CompositorNode
+Tracking
+Multiple Images
+Image Sequence
+Adjust
+Switch Stereo View
+
+# TextureNode
+Converter
+Distort
+Pattern
+
+# GeometryNode
+Smooth Corrective
+Smooth Laplacian
+Smooth by Angle
+Simulation Zone
+Repeat Zone
+Deprecated
+Matrix
+Field
+Instances
+Mesh
+Point
+Volume
+Utilities
+Group
+Layout
+Hair
+Normals
+Simulation
+Constant
+Sample
+Read
+Write
+Operations
+Geometry to Instance
+Join Geometry
+Deformation
+Generation
+Guides
+Utility
+Primitives
+Geometry Nodes
+Topology
+Input
+Scene
+Mix Color
+Mix Vector
+Text
+
+# Hair Node/Modifier
+Blend Hair Curves
+Displace Hair Curves
+Frizz Hair Curves
+Hair Curves Noise
+Roll Hair Curves
+Rotate Hair Curves
+Shrinkwrap Hair Curves
+Smooth Hair Curves
+Straighten Hair Curves
+Trim Hair Curves
+Duplicate Hair Curves
+Generate Hair Curves
+Interpolate Hair Curves
+Braid Hair Curves
+Clump Hair Curves
+Create Guide Index Map
+Curl Hair Curves
+Curve Info
+Curve Root
+Curve Segment
+Curve Tip
+Hair Attachment Info
+Attach Hair Curves to Surface
+Redistribute Curve Points
+Restore Curve Segment Length
+Set Hair Curve Profile

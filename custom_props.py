@@ -1,5 +1,7 @@
 import bpy
 
+import bl_i18n_utils.settings as setting_lng
+
 class MZ_CustomProps(bpy.types.PropertyGroup):
     
     subpix_size_y: bpy.props.IntProperty(
@@ -97,4 +99,48 @@ class MZ_CustomProps(bpy.types.PropertyGroup):
         default=(.0,.0,.0,1.0),
         size=4,
         subtype="COLOR",
+    )
+    
+class MZ_BilingualTranslatorProps(bpy.types.PropertyGroup):
+    bilingual_lang: bpy.props.EnumProperty(
+        items= [(str(i[0]), i[1], i[2]) for i in setting_lng.LANGUAGES],
+        name="双语语言",
+        default= 13,
+    )
+    
+    custom_delimiter: bpy.props.StringProperty(
+        name="custom_delimiter",
+        description="双语翻译中间的间隔符号",
+        default=" | ",
+    )
+    
+    is_translation_preceding: bpy.props.EnumProperty(
+        items=[('0','翻译在前','translation_preceding'),('1','翻译在后','translation_following')],
+        name="is_translation_preceding",
+        description= "翻译在原文前面或者后面",
+        default = 1,
+    )
+    
+    translation_section_all: bpy.props.BoolProperty(
+        name="translation_section_all",
+        default=True,
+        description="翻译区域选择-All",
+    )
+    
+    translation_section_node: bpy.props.BoolProperty(
+        name="translation_section_node",
+        default=True,
+        description="翻译区域选择-node",
+    )
+    
+    translation_section_modifier: bpy.props.BoolProperty(
+        name="translation_section_modifier",
+        default=True,
+        description="翻译区域选择-modifier",
+    )
+    
+    translation_section_white_list: bpy.props.BoolProperty(
+        name="translation_section_white_list",
+        default=True,
+        description="翻译区域选择-white_list",
     )

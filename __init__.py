@@ -26,6 +26,7 @@ def register():
         bpy.types.TOPBAR_HT_upper_bar.prepend(cls.draw)
 
     bpy.types.Scene.mz_custom_prop = bpy.props.PointerProperty(type=rc.MZ_CustomProps)
+    bpy.types.Scene.mz_bilingual_translator_prop = bpy.props.PointerProperty(type=rc.MZ_BilingualTranslatorProps)
 
 
 def unregister():
@@ -36,3 +37,4 @@ def unregister():
         bpy.types.TOPBAR_HT_upper_bar.remove(cls.draw)
 
     del bpy.types.Scene.mz_custom_prop
+    del bpy.types.Scene.mz_bilingual_translator_prop
