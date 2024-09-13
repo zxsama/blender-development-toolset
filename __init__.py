@@ -3,14 +3,14 @@
 bl_info = {
     "name": "Development Toolset",
     "author": "MIZI",
-    "version": (0, 2, 0),
+    "version": (0, 5, 0),
     "blender": (4, 2, 0),
     "location": "right topbar",
-    "description": "开发用快捷按钮",
+    "description": "开发用快捷工具",
     "wiki_url": "https://github.com/zxsama/blender-development-toolset",
     "doc_url": "https://github.com/zxsama/blender-development-toolset",
     "tracker_url": "https://github.com/zxsama/blender-development-toolset/issues",
-    "warning": "仅限windows平台, 依赖于psutil, pywin32库. 第一次点击涉及相关功能的按钮会自动安装, 需重启生效.",
+    "warning": "仅限windows平台, 依赖于pywin32库. 第一次点击涉及相关功能的按钮会自动安装, 需重启生效.",
     "category": "Development",
 }
 
