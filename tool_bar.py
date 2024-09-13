@@ -1,6 +1,7 @@
 import bpy
 import os
 from .functions import install_modul, launch_blender
+
 # from .lib.module_reload import reload as module_reload
 
 
@@ -117,22 +118,23 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
     bl_label = "console_toggle"
     bl_description = "控制台置顶"
     bl_options = {"REGISTER"}
-    
+
     @classmethod
     def poll(cls, context):
         return True
-    
+
     def draw(self, context):
         layout = self.layout
-        layout.label(text="第一次使用需要安装pywin32, 确认安装并重启")
-    
+        layout.label(text="第一次使用需要安装pywin32库, 确认安装并重启")
+
     def invoke(self, context, event):
         try:
             import win32gui, win32process, win32con
+
             return self.execute(context)
         except ImportError:
             return context.window_manager.invoke_props_dialog(self)
-    
+
     def execute(self, context):
         try:
             # pywin32
@@ -179,10 +181,10 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
         console_handle_list.clear()
 
         return {"FINISHED"}
-    
 
-class BarUI():
-    
+
+class BarUI:
+
     def __init__(self):
         ...
 
@@ -199,7 +201,7 @@ class BarUI():
             UI_OT_Switch_ZH_EN.bl_idname: ["中英文切换", icon_dict["WORDWRAP_ON"], ""],
         }
         return bar_button
-            
+
 
 class MZ_HT_BarUI(bpy.types.Header):
     bl_space_type = "TOPBAR"
@@ -218,14 +220,17 @@ class MZ_HT_BarUI(bpy.types.Header):
             if enable_bars[idx] and region.alignment == "RIGHT":
                 self.layout.operator(operator=bl_id, icon_value=data[1], text=data[2])
 
+
 # custom icon
 import bpy.utils.previews
+
 mz_custom_icons = bpy.utils.previews.new()
 icons_dir = os.path.join(os.path.dirname(__file__), "icons/torbar")
 icons = os.listdir(icons_dir)
 for icon in icons:
     icon_name = os.path.splitext(icon)[0]
-    mz_custom_icons.load(icon_name, os.path.join(icons_dir, icon), "IMAGE")    
-        
+    mz_custom_icons.load(icon_name, os.path.join(icons_dir, icon), "IMAGE")
+
+
 def unregister():
     bpy.utils.previews.remove(mz_custom_icons)
