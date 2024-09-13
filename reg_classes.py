@@ -2,6 +2,7 @@ from .bilingual_translator import (
     MZ_OT_GenerateBilingualTranslator,
     MZ_OT_RegisterBilingualTranslator,
     MZ_OT_OpenBilingualWhiteList,
+    MZ_OT_DeleteBilingualTranslator,
 )
 from .tool_bar import (
     UI_OT_Switch_ZH_EN,
@@ -47,6 +48,7 @@ all_classes = [
     MZ_OT_GenerateBilingualTranslator,
     MZ_OT_RegisterBilingualTranslator,
     MZ_OT_OpenBilingualWhiteList,
+    MZ_OT_DeleteBilingualTranslator,
 ]
 
 bar_classes = [

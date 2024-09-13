@@ -193,6 +193,42 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
 # msgunfmt = os.path.join(gettext_tools, "msgunfmt.exe")
 # decode_mo2po = [f"{msgunfmt} blender.mo -o blender.po"]
 # encode_po2mo = [f"{msgfmt} blender.po -o blender.mo"]
+def unregister_bilingual_translator():
+    BTD = BilingualTranslatorData()
+    cfg_file = BTD.get_cfg_file()
+    cfg_append_data = BTD.get_cfg_append_data()
+    mo_floder, _ = BTD.get_bilingual_mo_path()
+
+    with open(cfg_file, "r", encoding="utf-8") as f:
+        lang_data = f.read()
+        lang_data = lang_data.replace(cfg_append_data, "")
+    with open(cfg_file, "w", encoding="utf-8") as f:
+        f.writelines(lang_data)
+
+    mo_floder = os.path.dirname(mo_floder)
+    if os.path.exists(mo_floder):
+        shutil.rmtree(mo_floder)
+
+
+class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
+    bl_idname = "mz.delete_bilingual_translator"
+    bl_label = "删除双语翻译"
+    bl_description = "Delete bilingual translation"
+    bl_options = {"REGISTER"}
+
+    def draw(self, context):
+        layout = self.layout
+        layout.label(text="将会重启blender")
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self)
+
+    def execute(self, context):
+        context.preferences.view.language = "en_US"
+        unregister_bilingual_translator()
+        self.report({"INFO"}, "双语翻译已删除")
+        bpy.ops.mz.restart_saved_blender()
+        return {"FINISHED"}
 
 class MZ_OT_OpenBilingualWhiteList(bpy.types.Operator):
     bl_idname = "mz.open_bilingual_white_list"
@@ -216,20 +252,4 @@ class MZ_OT_OpenBilingualWhiteList(bpy.types.Operator):
         return {'FINISHED'}
 
 def unregister():
-    BTD = BilingualTranslatorData()
-    cfg_file = BTD.get_cfg_file()
-    cfg_append_data = BTD.get_cfg_append_data()
-    mo_floder, _ = BTD.get_bilingual_mo_path()
-    
-    with open(cfg_file, "r", encoding="utf-8") as f:
-        lang_data = f.readlines()
-        try:
-            index = lang_data.index(cfg_append_data)
-            lang_data.pop(index)
-        except ValueError:
-            pass
-    with open(cfg_file,"w", encoding="utf-8") as f:
-        f.writelines(lang_data)
-        
-    if os.path.exists(mo_floder):
-        shutil.rmtree(mo_floder)
+    unregister_bilingual_translator()

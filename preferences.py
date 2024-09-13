@@ -7,6 +7,7 @@ from .bilingual_translator import (BilingualTranslatorData,
                            MZ_OT_GenerateBilingualTranslator, 
                            MZ_OT_RegisterBilingualTranslator,
                            MZ_OT_OpenBilingualWhiteList,
+                           MZ_OT_DeleteBilingualTranslator,
                            )
 
 bar_button = BarUI.get_bar_data()
@@ -70,7 +71,10 @@ class MZ_Preferences(bpy.types.AddonPreferences):
             sub_flow.separator()
             btn_flow = sub_flow.column(align=True)
             btn_flow.scale_y = 1.75
-            btn_flow.operator(MZ_OT_GenerateBilingualTranslator.bl_idname, text="编译双语翻译")
+            btn_flow_row = btn_flow.row()
+            btn_flow_row = btn_flow_row.split(factor=0.9, align=True)
+            btn_flow_row.operator(MZ_OT_GenerateBilingualTranslator.bl_idname, text="编译双语翻译", icon="FILE_REFRESH")
+            btn_flow_row.operator(MZ_OT_DeleteBilingualTranslator.bl_idname, text="", icon="TRASH")
         else:
             
             btn_flow = sub_flow.box()
