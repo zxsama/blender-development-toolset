@@ -30,6 +30,10 @@ def register():
 
 
 def unregister():
+    from .tool_bar import unregister as tb_unregister
+    from .bilingual_translator import unregister as bt_unregister
+    tb_unregister()
+    bt_unregister()
 
     for cls in rc.all_classes:
         bpy.utils.unregister_class(cls)
