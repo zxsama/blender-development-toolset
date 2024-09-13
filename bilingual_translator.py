@@ -208,11 +208,12 @@ def unregister_bilingual_translator():
     cfg_append_data = BTD.get_cfg_append_data()
     mo_floder, _ = BTD.get_bilingual_mo_path()
 
-    with open(cfg_file, "r", encoding="utf-8") as f:
-        lang_data = f.read()
-        lang_data = lang_data.replace(cfg_append_data, "")
-    with open(cfg_file, "w", encoding="utf-8") as f:
-        f.writelines(lang_data)
+    if os.path.exists(cfg_file):
+        with open(cfg_file, "r", encoding="utf-8") as f:
+            lang_data = f.read()
+            lang_data = lang_data.replace(cfg_append_data, "")
+        with open(cfg_file, "w", encoding="utf-8") as f:
+            f.writelines(lang_data)
 
     mo_floder = os.path.dirname(mo_floder)
     if os.path.exists(mo_floder):
