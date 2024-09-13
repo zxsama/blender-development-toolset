@@ -1,18 +1,14 @@
-from email.policy import default
-from re import sub
 import bpy
 import os
-from .tool_bar import BarUI
 from .bilingual_translator import (BilingualTranslatorData, 
-                           MZ_OT_GenerateBilingualTranslator, 
-                           MZ_OT_RegisterBilingualTranslator,
-                           MZ_OT_OpenBilingualWhiteList,
-                           MZ_OT_DeleteBilingualTranslator,
-                           )
-
-bar_button = BarUI.get_bar_data()
+                                   MZ_OT_GenerateBilingualTranslator, 
+                                   MZ_OT_RegisterBilingualTranslator,
+                                   MZ_OT_OpenBilingualWhiteList,
+                                   MZ_OT_DeleteBilingualTranslator,
+                                    )
 
 
+bar_button_sum = 5
 class MZ_Preferences(bpy.types.AddonPreferences):
     # this must match the add-on name, use '__package__'
     # when defining this in a submodule of a python package.
@@ -20,17 +16,10 @@ class MZ_Preferences(bpy.types.AddonPreferences):
 
     enable_bar_buttons: bpy.props.BoolVectorProperty(
         name="enable_bar_buttons",
-        size=len(bar_button),
-        default=[True] * len(bar_button),
+        size=bar_button_sum,
+        default=[True] * bar_button_sum,
         description="是否开启按钮的bool数组",
-        # update=update_bar_ops,
     )
-
-    def update_bar_ops(self, context):
-        for index, (_, _) in enumerate(bar_button.items()):
-            if not self.enable_bar_buttons[index]:
-                ...
-                # TODO: unregist class
 
     def draw(self, context):
         layout = self.layout
@@ -38,6 +27,8 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         layout.use_property_decorate = False
         row = layout.row()
         row = row.split(factor=0.3)
+        
+        bar_button = context.scene.mz_bar_button
         box_btn_qucik = row.column(align=True)
         box_btn_qucik.box().label(text="快捷按键开关")
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)

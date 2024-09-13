@@ -189,33 +189,13 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class BarUI:
-
-    def __init__(self):
-        ...
-
-    @classmethod
-    def get_bar_data(cls):
-        buildin_icons = bpy.types.UILayout.bl_rna.functions["prop"].parameters["icon"].enum_items.items()
-        icon_dict = {tup[1].identifier : tup[1].value for tup in buildin_icons}
-
-        bar_button = {
-            UI_OT_ConsoleToggle.bl_idname: ["控制台置顶", icon_dict["CONSOLE"], ""],
-            UI_OT_RestartSavedBlender.bl_idname: ["保存并重启blender",mz_custom_icons["SAVE_RE_BLENDER"].icon_id,""],
-            UI_OT_RestartBlender.bl_idname: ["重启全新blender", mz_custom_icons["RE_BLENDER"].icon_id, ""],
-            UI_OT_OpenAddonPath.bl_idname: ["打开插件路径", mz_custom_icons["ADDON_FLODER"].icon_id, ""],
-            UI_OT_Switch_ZH_EN.bl_idname: ["中英文切换", icon_dict["WORDWRAP_ON"], ""],
-        }
-        return bar_button
-
-
 class MZ_HT_BarUI(bpy.types.Header):
     bl_space_type = "TOPBAR"
-
+    
     def draw(self, context):
         region = context.region
         custom_prop = context.scene.mz_custom_prop
-        bar_button = BarUI.get_bar_data()
+        bar_button = context.scene.mz_bar_button
         bar_button[UI_OT_Switch_ZH_EN.bl_idname][2] = context.preferences.view.language
 
         addon_name = __package__
@@ -225,18 +205,3 @@ class MZ_HT_BarUI(bpy.types.Header):
         for idx, (bl_id, data) in enumerate(bar_button.items()):
             if enable_bars[idx] and region.alignment == "RIGHT":
                 self.layout.operator(operator=bl_id, icon_value=data[1], text=data[2])
-
-
-# custom icon
-import bpy.utils.previews
-
-mz_custom_icons = bpy.utils.previews.new()
-icons_dir = os.path.join(os.path.dirname(__file__), "icons/torbar")
-icons = os.listdir(icons_dir)
-for icon in icons:
-    icon_name = os.path.splitext(icon)[0]
-    mz_custom_icons.load(icon_name, os.path.join(icons_dir, icon), "IMAGE")
-
-
-def unregister():
-    bpy.utils.previews.remove(mz_custom_icons)

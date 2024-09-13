@@ -261,7 +261,3 @@ class MZ_OT_OpenBilingualWhiteList(bpy.types.Operator):
 
         self.report({"INFO"}, "参见文本编辑器中的 'white_list'")
         return {"FINISHED"}
-
-
-def unregister():
-    unregister_bilingual_translator()
