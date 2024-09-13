@@ -1,5 +1,4 @@
 import bpy
-
 import bl_i18n_utils.settings as setting_lng
 
 class MZ_CustomProps(bpy.types.PropertyGroup):

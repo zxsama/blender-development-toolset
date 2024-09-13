@@ -2,7 +2,6 @@ import re
 import shutil
 import bpy
 import os
-import inspect
 import bl_i18n_utils.settings as setting_lng
 from .lib import polib
 
