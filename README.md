@@ -1,20 +1,41 @@
 # blender-development-toolset
 
-一个简易的用于blender开发的快捷工具集
+一个blender的便捷工具集，目前支持快速重启、中英切换、双语翻译。
 
-![preview](./img/preview.png)
+仅支持Blender 4.2以上。
 
-功能：
-- 点击前置控制台
-- 保存当前工作，并重启
+![preview](./resource/img/preview.png)
+
+## 快捷按键：
+
+![quick_btn](./resource/img/quick_btn.webp)
+
+### 按键功能：
+
+- 控制台置顶
+- 保存并重启Blender
 - 直接重启blender
-- 刷新插件
-- 打开插件文件夹
-- 中英文切换
+- 重启全新Blender
+- 打开插件路径
+- 中英切换
 
-依赖库：
-- psutil
-- pywin32
-> 注：第一次点击相关功能时会自动安装库，安装完毕需重启生效
+## 双语翻译
+
+实时编译的双语翻译，支持语言和一定程度的格式定义，支持黑白名单添加或去除双语显示。
+
+![bilingual](./resource/img/bilingual.png)
+
+### 功能演示
+
+<video src="./resource/img/demonstration .mp4"></video>
+
+
+
+## Q&A
+
+- 为什么有未双语显示的文本？
+
+- 本插件使用官方翻译文本进行双语显示，官方文本中未翻译的内容同样也不会显示。
+
 
 
