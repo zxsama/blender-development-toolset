@@ -286,12 +286,14 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
             section_data.update(modif_name)
 
             # 白名单
+        whitelist = []
         if not translation_section_all and translation_section_whitelist:
             with open(whitelist_file, "r", encoding="utf-8") as f:
                 whitelist = [line.strip() for line in f.readlines()]
             section_data.update(whitelist)
 
             # 黑名单
+        blacklist = []
         if translation_section_blacklist:
             with open(blacklist_file, "r", encoding="utf-8") as f:
                 blacklist = [line.strip() for line in f.readlines()]
@@ -299,7 +301,9 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
 
         # 合并翻译
         for entry in translation_data:
-            if translation_section_all or entry.msgid in section_data:
+            if (translation_section_all or entry.msgid in section_data) and (
+                not entry.msgid in blacklist
+            ):
                 entry.msgstr = self.merge_txt(
                     entry.msgstr, entry.msgid, is_translation_preceding
                 )
