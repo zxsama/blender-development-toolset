@@ -1,5 +1,5 @@
 # 每行一条
-# 使用英文名称
+# 使用英文名称, 注意大小写
 # 记得保存(Alt+S)
 
 # Modifier
@@ -8,15 +8,12 @@ Deform
 Normals
 Physics
 Unassigned
-Name
 
 # Math
-Float
 Darken
 Multiply
 Color Burn
 Lighten
-Screen
 Color Dodge
 Overlay
 Soft Light
@@ -25,57 +22,28 @@ Difference
 Exclusion
 Subtract
 Divide
-Hue
-Saturation
-Clamp Result
-Clamp Factor
-Factor
-Projection
 Equirectangular
 Mirror Ball
-Interpolation
-Linear
 Closest
 Cubic
 Smart
-Samples
-Inside
-Only Local
-Age
-Lifetime
-Location
-Velocity
-Angular Velocity
-Bright
-Contrast
-Quadratic
-Min
-Max
 Min Max
-Range
 Ease
 Cardinal
 B-Spline
 Stepped Linear
 Smooth Step
 Smoother Step
-From Min
-From Max
-To Min
-To Max
 Multiply Add
-Power
 Logarithm
 Square Root
 Inverse Square Root
 Absolute
-Exponent
 Minimum
 Maximum
 Less Than
 Greater Than
 Sign
-Compare
 Smooth Minimum
 Smooth Maximum
 Round
@@ -85,7 +53,6 @@ Truncate
 Fraction
 Truncated Modulo
 Floored Modulo
-Wrap
 Snap
 Ping-Pong
 Sine
@@ -106,27 +73,13 @@ Refract
 Faceforward
 Dot Product
 Modulo
-Squash
-Frequency
-Mortar
-Mortar Size
-Mortar Smooth
-Bias
-Brick Width
-Row Height
-Depth
-Distortion
 Multifractal
 Ridged Multifractal
 Hybrid Multifractal
 fBM
 Hetero Terrain
-Detail
-Lacunarity
-Space
 Object Space
 World Space
-Resolution
 Particle Age
 Particle Speed
 Particle Velocity
@@ -139,34 +92,18 @@ Flat
 Box
 Sphere
 Tube
-Repeat
 Extend
-Clip
 Euclidean
 Manhattan
 Chebychev
 Minkowski
-Randomness
 Smooth F1
 Distance to Edge
 N-Sphere Radius
 Saw
 Triangle
-Detail Scale
-Detail Roughness
-Phase Offset
-Bands
-Rings
-Invert
-Height
-Midlevel
 Tangent Space
-Dot
 Axis Angle
-Euler
-Axis
-Center
-Angle
 World
 
 # ShaderNode
@@ -176,122 +113,35 @@ Extend Extrapolated
 Reset Curve
 Internal
 External
-Extension
-Sun Disc
-Sun Size
-Sun Intensity
-Sun Elevation
-Sun Rotation
-Altitude
-Air
-Dust
-Ozone
 Object Vertices
 Attributes
-Shader
-Strength
 Thin Film
-Thickness
-IOR
 IOR Level
-Tint
 Sheen
-Weight
-Roughness
-Coat
-Weight
-Metallic
-Roughness
-Transmission
-Weight
-Anisotropy
-Anisotropic
-Anisotropic Rotation
 Multiscatter GGX
-Specular
 Christensen-Burley
 Random Walk
 Random Walk (Skin)
-Subsurface
 BaseColor
-Thickness
-Direction
 Beckmann
-Reflection
-Offset
-RoughnessU
-RoughnessV
-Fac
 Chiang
 Huang
-Absorption Coefficient
 Melanin Concentration
 Direct Coloring
-Radial Roughness
-Random Roughness
-Random
-Density
-Density Attribute
-Absorption Color
-Emission Strength
-Emission Color
-Blackbody Intensity
-Blackbody Tint
-Temperature
-Temperature Attribute
-Size
 Diffuse
 Glossy
-Object
-Instancer
 View Layer
-View Vector
-View Z Depth
-View Distance
-Is Strand
-Intercept
-Length
-Tangent Normal
-True Normal
-Incoming
-Parametric
-Backfacing
-Pointiness
-Random Per Island
-Facing
-Is Camera Ray
-Is Shadow Ray
-Is Diffuse Ray
-Is Glossy Ray
-Is Singular Ray
-Is Reflection Ray
-Is Transmission Ray
-Ray Length
-Ray Depth
-Diffuse Depth
-Glossy Depth
-Transparent Depth
-Transmission Depth
-Object Index
 Radial
-Camera
-Generated
-From Instancer
-Flame
-Pixel Size
 Color Mode
 
 # CompositorNode
-Tracking
 Multiple Images
 Image Sequence
-Adjust
 Switch Stereo View
 
 # TextureNode
 Converter
 Distort
-Pattern
 
 # GeometryNode
 Smooth Corrective
@@ -300,25 +150,17 @@ Smooth by Angle
 Simulation Zone
 Repeat Zone
 Deprecated
-Matrix
 Field
-Instances
-Mesh
-Point
-Volume
 Utilities
 Group
 Layout
 Hair
 Normals
 Simulation
-Constant
 Sample
 Read
 Write
 Operations
-Geometry to Instance
-Join Geometry
 Deformation
 Generation
 Guides
@@ -326,11 +168,20 @@ Utility
 Primitives
 Geometry Nodes
 Topology
-Input
-Scene
 Mix Color
 Mix Vector
-Text
+Quaternion
+4x4 Matrix
+Interpolation Mode
+Nearest Neighbor
+Trilinear
+Triquadratic
+Evaluated
+Connected
+N-Gon
+Triangles
+Face
+Face Corner
 
 # Hair Node/Modifier
 Blend Hair Curves

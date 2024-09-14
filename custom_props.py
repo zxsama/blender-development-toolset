@@ -114,9 +114,9 @@ class MZ_BilingualTranslatorProps(bpy.types.PropertyGroup):
     )
     
     is_translation_preceding: bpy.props.EnumProperty(
-        items=[('0','翻译在前','translation_preceding'),('1','翻译在后','translation_following')],
+        items=[('0','译文在前','translation_preceding'),('1','译文在后','translation_following')],
         name="is_translation_preceding",
-        description= "翻译在原文前面或者后面",
+        description= "译文在原文前面或者后面",
         default = 1,
     )
     
@@ -144,8 +144,14 @@ class MZ_BilingualTranslatorProps(bpy.types.PropertyGroup):
         description="翻译区域-modifier",
     )
     
-    translation_section_white_list: bpy.props.BoolProperty(
-        name="translation_section_white_list",
+    translation_section_whitelist: bpy.props.BoolProperty(
+        name="translation_section_whitelist",
         default=True,
-        description="翻译区域-white_list",
+        description="翻译区域-whitelist",
+    )
+    
+    translation_section_blacklist: bpy.props.BoolProperty(
+        name="translation_section_blacklist",
+        default=False,
+        description="翻译区域-blacklist",
     )

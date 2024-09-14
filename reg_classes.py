@@ -1,7 +1,7 @@
 from .bilingual_translator import (
     MZ_OT_GenerateBilingualTranslator,
     MZ_OT_RegisterBilingualTranslator,
-    MZ_OT_OpenBilingualWhiteList,
+    MZ_OT_OpenBilingualBlackWhiteList,
     MZ_OT_DeleteBilingualTranslator,
 )
 from .tool_bar import (
@@ -47,7 +47,7 @@ all_classes = [
     MZ_OT_ReplaceNodegroup,
     MZ_OT_GenerateBilingualTranslator,
     MZ_OT_RegisterBilingualTranslator,
-    MZ_OT_OpenBilingualWhiteList,
+    MZ_OT_OpenBilingualBlackWhiteList,
     MZ_OT_DeleteBilingualTranslator,
 ]
 

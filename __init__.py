@@ -33,7 +33,7 @@ def register():
         rc.UI_OT_RestartSavedBlender.bl_idname: ["保存并重启blender",MZ_CUSTOMICONS["SAVE_RE_BLENDER"].icon_id,""],
         rc.UI_OT_RestartBlender.bl_idname: ["重启全新blender", MZ_CUSTOMICONS["RE_BLENDER"].icon_id, ""],
         rc.UI_OT_OpenAddonPath.bl_idname: ["打开插件路径", MZ_CUSTOMICONS["ADDON_FLODER"].icon_id, ""],
-        rc.UI_OT_Switch_ZH_EN.bl_idname: ["中英文切换", icon_dict["WORDWRAP_ON"], ""],
+        rc.UI_OT_Switch_ZH_EN.bl_idname: ["中英切换", icon_dict["WORDWRAP_ON"], ""],
     }
     bpy.types.Scene.mz_bar_button = bar_button
 

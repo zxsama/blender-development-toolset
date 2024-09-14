@@ -30,11 +30,13 @@ class BilingualTranslatorData:
         new_mo_file = os.path.join(new_mo_lcm, "blender.mo")
         return new_mo_lcm, new_mo_file
 
-    def get_white_list_path(self):
+    def get_whitelist_path(self):
         addon_path = os.path.dirname(__file__)
-        return os.path.join(
-            addon_path, "resource", "bilingual_translator", "white_list"
-        )
+        return os.path.join(addon_path, "resource", "bilingual_translator", "whitelist")
+
+    def get_blacklist_path(self):
+        addon_path = os.path.dirname(__file__)
+        return os.path.join(addon_path, "resource", "bilingual_translator", "blacklist")
 
 
 class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
@@ -227,7 +229,8 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         BTD = BilingualTranslatorData()
         _, bili_mo_file = BTD.get_bilingual_mo_path()
         locale_folder = BTD.get_locale_floder()
-        white_list_file = BTD.get_white_list_path()
+        whitelist_file = BTD.get_whitelist_path()
+        blacklist_file = BTD.get_blacklist_path()
         bili_trans_prop = context.scene.mz_bilingual_translator_prop
         bilingual_lang_idx = int(bili_trans_prop.bilingual_lang)
         language_code = setting_lng.LANGUAGES[bilingual_lang_idx][2]
@@ -239,7 +242,8 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
             bili_trans_prop.translation_section_node_property
         )
         translation_section_modifier = bili_trans_prop.translation_section_modifier
-        translation_section_white_list = bili_trans_prop.translation_section_white_list
+        translation_section_whitelist = bili_trans_prop.translation_section_whitelist
+        translation_section_blacklist = bili_trans_prop.translation_section_blacklist
 
         # 获取mo数据
         ori_lang_folder = os.path.join(locale_folder, language_code)
@@ -282,11 +286,18 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
             section_data.update(modif_name)
 
             # 白名单
-        if not translation_section_all and translation_section_white_list:
-            with open(white_list_file, "r") as f:
-                white_list = [line.strip() for line in f.readlines()]
-            section_data.update(white_list)
+        if not translation_section_all and translation_section_whitelist:
+            with open(whitelist_file, "r", encoding="utf-8") as f:
+                whitelist = [line.strip() for line in f.readlines()]
+            section_data.update(whitelist)
 
+            # 黑名单
+        if translation_section_blacklist:
+            with open(blacklist_file, "r", encoding="utf-8") as f:
+                blacklist = [line.strip() for line in f.readlines()]
+            section_data.difference_update(blacklist)
+
+        # 合并翻译
         for entry in translation_data:
             if translation_section_all or entry.msgid in section_data:
                 entry.msgstr = self.merge_txt(
@@ -347,23 +358,32 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
         return {"FINISHED"}
 
 
-class MZ_OT_OpenBilingualWhiteList(bpy.types.Operator):
-    bl_idname = "mz.open_bilingual_white_list"
-    bl_label = "双语翻译白名单"
-    bl_description = "Edit whitelist"
+class MZ_OT_OpenBilingualBlackWhiteList(bpy.types.Operator):
+    bl_idname = "mz.open_bilingual_black_white_list"
+    bl_label = "双语翻译 黑/白名单"
+    bl_description = "Edit black/whitelist"
     bl_options = {"REGISTER", "UNDO"}
+
+    list_type: bpy.props.BoolProperty(
+        name="list_type",
+        default=True,
+        description="True:白名单, False:黑名单",
+    )  # type: ignore
 
     def invoke(self, context, event):
         return self.execute(context)
 
     def execute(self, context):
         BTD = BilingualTranslatorData()
-        white_list_file = BTD.get_white_list_path()
+        whitelist_file = BTD.get_whitelist_path()
+        blacklist_file = BTD.get_blacklist_path()
+        list_file = whitelist_file if self.list_type else blacklist_file
+        list_name = os.path.basename(list_file)
         for text in bpy.data.texts:
-            if text.filepath == white_list_file:
-                self.report({"INFO"}, "参见文本编辑器中的 'white_list'")
+            if text.filepath == list_file:
+                self.report({"INFO"}, f"参见文本编辑器中的 '{list_name}'")
                 return {"FINISHED"}
-        text = bpy.data.texts.load(white_list_file)
+        text = bpy.data.texts.load(list_file)
 
-        self.report({"INFO"}, "参见文本编辑器中的 'white_list'")
+        self.report({"INFO"}, f"参见文本编辑器中的 '{list_name}'")
         return {"FINISHED"}

@@ -3,7 +3,7 @@ import os
 from .bilingual_translator import (BilingualTranslatorData, 
                                    MZ_OT_GenerateBilingualTranslator, 
                                    MZ_OT_RegisterBilingualTranslator,
-                                   MZ_OT_OpenBilingualWhiteList,
+                                   MZ_OT_OpenBilingualBlackWhiteList,
                                    MZ_OT_DeleteBilingualTranslator,
                                     )
 
@@ -48,17 +48,29 @@ class MZ_Preferences(bpy.types.AddonPreferences):
             sub_flow = sub_box.grid_flow(columns=1, align=True)
             sub_flow.prop(bili_trans_prop, "bilingual_lang", text="双语语言")
             sub_flow.prop(bili_trans_prop, "custom_delimiter", text="间隔符")
-            sub_row = sub_flow.row()
-            sub_row.prop(bili_trans_prop, "is_translation_preceding", text="合并方式", expand=True)
-            sub_row = sub_flow.row()
             
-            sub_col = sub_row.row(heading="翻译区域", align=True)
-            sub_col.prop(bili_trans_prop, "translation_section_all", text="ALL")
-            sub_col.prop(bili_trans_prop, "translation_section_node", text="节点")
-            sub_col.prop(bili_trans_prop, "translation_section_node_property", text="节点属性")
-            sub_col.prop(bili_trans_prop, "translation_section_modifier", text="修改器")
-            sub_col.prop(bili_trans_prop, "translation_section_white_list", text="白名单")
-            sub_col.operator(MZ_OT_OpenBilingualWhiteList.bl_idname, text="编辑白名单")
+            sub_flow_row = sub_flow.row()
+            sub_flow_row.prop(bili_trans_prop, "is_translation_preceding", text="合并方式", expand=True)
+            
+            sub_flow_row = sub_flow.row()
+            sub_fr_row = sub_flow_row.row(heading="翻译区域", align=True)
+            sub_fr_row.prop(bili_trans_prop, "translation_section_all", text="ALL", toggle=True)
+            sub_fr_row.prop(bili_trans_prop, "translation_section_node", text="节点", toggle=True)
+            sub_fr_row.prop(bili_trans_prop, "translation_section_node_property", text="节点属性", toggle=True)
+            sub_fr_row.prop(bili_trans_prop, "translation_section_modifier", text="修改器", toggle=True)
+            
+            sub_flow_row = sub_flow.row()
+            sub_fr_row = sub_flow_row.row(heading="", align=True)
+            
+            sub_fr_row = sub_fr_row.row()
+            sub_fr_row.prop(bili_trans_prop, "translation_section_whitelist", text="白名单", toggle=True)
+            whitelist = sub_fr_row.operator(MZ_OT_OpenBilingualBlackWhiteList.bl_idname, text="编辑")
+            whitelist.list_type = True
+            
+            sub_fr_row = sub_fr_row.row().row(align=True)
+            sub_fr_row.prop(bili_trans_prop, "translation_section_blacklist", text="黑名单", toggle=True)
+            blacklist = sub_fr_row.operator(MZ_OT_OpenBilingualBlackWhiteList.bl_idname, text="编辑")
+            blacklist.list_type = False
             
             sub_flow.separator()
             btn_flow = sub_flow.column(align=True)
