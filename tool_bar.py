@@ -194,7 +194,6 @@ class MZ_HT_BarUI(bpy.types.Header):
     
     def draw(self, context):
         region = context.region
-        custom_prop = context.scene.mz_custom_prop
         bar_button = context.scene.mz_bar_button
         bar_button[UI_OT_Switch_ZH_EN.bl_idname][2] = context.preferences.view.language
 
