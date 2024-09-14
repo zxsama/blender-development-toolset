@@ -30,7 +30,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         
         bar_button = context.scene.mz_bar_button
         box_btn_qucik = row.column(align=True)
-        box_btn_qucik.box().label(text="快捷按键开关")
+        box_btn_qucik.box().label(text="快捷按键显示/关闭")
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
         for index, (_, value) in enumerate(bar_button.items()):
             sub_flow.prop(self, "enable_bar_buttons", index=index, text=value[0])

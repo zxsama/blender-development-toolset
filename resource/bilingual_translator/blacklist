@@ -1,7 +1,9 @@
-# 每行一条
-# 使用英文名称, 注意大小写
-# 记得保存(Alt+S)
+# 不需要翻译的语句
 # 黑名单的优先级最高
+# 每行一条
+# 使用英文名称
+# 注意大小写
+# 记得保存(Alt+S)
 
 Add
 Object
@@ -11,3 +13,11 @@ Window
 File
 Text
 Format
+Select
+Edit
+Render
+Help
+Edit
+Select
+Templates
+New

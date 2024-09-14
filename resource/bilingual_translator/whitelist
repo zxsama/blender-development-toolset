@@ -1,5 +1,7 @@
+# 需要翻译的语句
 # 每行一条
-# 使用英文名称, 注意大小写
+# 使用英文名称
+# 注意大小写
 # 记得保存(Alt+S)
 
 # Modifier
@@ -10,30 +12,6 @@ Physics
 Unassigned
 
 # Math
-Darken
-Multiply
-Color Burn
-Lighten
-Color Dodge
-Overlay
-Soft Light
-Linear Light
-Difference
-Exclusion
-Subtract
-Divide
-Equirectangular
-Mirror Ball
-Closest
-Cubic
-Smart
-Min Max
-Ease
-Cardinal
-B-Spline
-Stepped Linear
-Smooth Step
-Smoother Step
 Multiply Add
 Logarithm
 Square Root
@@ -66,6 +44,30 @@ Hyperbolic Cosine
 Hyperbolic Tangent
 To Radians
 To Degrees
+Darken
+Multiply
+Color Burn
+Lighten
+Color Dodge
+Overlay
+Soft Light
+Linear Light
+Difference
+Exclusion
+Subtract
+Divide
+Equirectangular
+Mirror Ball
+Closest
+Cubic
+Smart
+Min Max
+Ease
+Cardinal
+B-Spline
+Stepped Linear
+Smooth Step
+Smoother Step
 Cross Product
 Project
 Reflect
