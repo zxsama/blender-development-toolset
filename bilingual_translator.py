@@ -95,7 +95,105 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
 
         return f"{txt}{custom_delimiter}{append_txt}"
 
+    def get_nodes_property(self, identifiers):
+        """
+        获取所有节点的属性名称, API限制所以先实例化再获取
+        https://blender.stackexchange.com/questions/254305/how-to-know-the-input-output-sockets-of-a-node-without-importing-it-into-the
+        """
+
+        def get_self_property(node):
+            default_props = (
+                "dimensions",
+                "draw_buttons",
+                "draw_buttons_ext",
+                "input_template",
+                "inputs",
+                "internal_links",
+                "isAnimationNode",
+                "is_registered_node_type",
+                "output_template",
+                "outputs",
+                "poll",
+                "poll_instance",
+                "rna_type",
+                "socket_value_update",
+                "type",
+                "update",
+                "viewLocation",
+                "texture_mapping",
+                "color_mapping",
+                "filepath",
+                "cache_point_density",
+                "calc_point_density",
+                "calc_point_density_minmax",
+                "interface",
+                "height",
+                "show_options",
+                "show_preview",
+                "show_texture",
+                "width_hidden",
+                "color",
+                "hide",
+                "label",
+                "location",
+                "mute",
+                "name",
+                "parent",
+                "select",
+                "use_custom_color",
+                "width",
+            )
+            self_proper = []
+            for prop_name in dir(node):
+                if prop_name.startswith("_") or prop_name.startswith("bl_"):
+                    continue
+                if prop_name in default_props:
+                    continue
+                # 从属性名称生成可能的UI名称组合, 临时方案
+                words = prop_name.split("_")
+                capitalized_words = [
+                    word.capitalize().replace("Uv", "UV") for word in words
+                ]
+                self_proper.extend([" ".join(capitalized_words)] + capitalized_words)
+            return self_proper
+
+        property_set = set()
+        tmp_name = "nodes_temporary"
+        node_types = [
+            "CompositorNodeTree",
+            "TextureNodeTree",
+            "GeometryNodeTree",
+            "ShaderNodeTree",
+        ]
+        data = bpy.data
+        ng = data.node_groups
+
+        for nd_type in node_types:
+            tmp_ng = ng.get(tmp_name)
+            if not tmp_ng:
+                tmp_ng = ng.new(tmp_name, type=nd_type)
+            node = tmp_ng.nodes
+            for name in identifiers:
+                node.clear()
+                try:
+                    n = node.new(name)
+                    socket_name = lambda s: s.label if s.label else s.name
+                    inputs = [socket_name(i) for i in n.inputs]
+                    outputs = [socket_name(o) for o in n.outputs]
+                    selfs = get_self_property(n)
+                    property_set.update(inputs)
+                    property_set.update(outputs)
+                    property_set.update(selfs)
+                except Exception as e:
+                    ...
+            ng.remove(tmp_ng)
+
+        return property_set
+
     def get_bl_rna_name(self, target: str = "Node"):
+        """
+        https://blender.stackexchange.com/questions/79784/how-to-get-all-types-of-nodes-dynamically
+        """
         set_result = set()
         for li in bpy.types.__dir__():
             type = getattr(bpy.types, li)
@@ -137,6 +235,9 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         is_translation_preceding = int(bili_trans_prop.is_translation_preceding[0])
         translation_section_all = bili_trans_prop.translation_section_all
         translation_section_node = bili_trans_prop.translation_section_node
+        translation_section_node_property = (
+            bili_trans_prop.translation_section_node_property
+        )
         translation_section_modifier = bili_trans_prop.translation_section_modifier
         translation_section_white_list = bili_trans_prop.translation_section_white_list
 
@@ -157,6 +258,12 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         if not translation_section_all and translation_section_node:
             nodes_name = self.get_bl_rna_name(target="Node")
             section_data.update(nodes_name)
+
+            # Node_Property
+        if not translation_section_all and translation_section_node_property:
+            modif_identifier = self.get_bl_rna_identifier(target="Node")
+            nodes_property = self.get_nodes_property(modif_identifier)
+            section_data.update(nodes_property)
 
             # Modifier
         if not translation_section_all and translation_section_modifier:

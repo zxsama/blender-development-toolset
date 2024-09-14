@@ -55,6 +55,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
             sub_col = sub_row.row(heading="翻译区域", align=True)
             sub_col.prop(bili_trans_prop, "translation_section_all", text="ALL")
             sub_col.prop(bili_trans_prop, "translation_section_node", text="节点")
+            sub_col.prop(bili_trans_prop, "translation_section_node_property", text="节点属性")
             sub_col.prop(bili_trans_prop, "translation_section_modifier", text="修改器")
             sub_col.prop(bili_trans_prop, "translation_section_white_list", text="白名单")
             sub_col.operator(MZ_OT_OpenBilingualWhiteList.bl_idname, text="编辑白名单")

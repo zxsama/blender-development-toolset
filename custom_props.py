@@ -123,23 +123,29 @@ class MZ_BilingualTranslatorProps(bpy.types.PropertyGroup):
     translation_section_all: bpy.props.BoolProperty(
         name="translation_section_all",
         default=True,
-        description="翻译区域选择-All",
+        description="翻译区域-All",
     )
     
     translation_section_node: bpy.props.BoolProperty(
         name="translation_section_node",
         default=True,
-        description="翻译区域选择-node",
+        description="翻译区域-node",
+    )
+    
+    translation_section_node_property: bpy.props.BoolProperty(
+        name="translation_section_node_property",
+        default=True,
+        description="翻译区域-node property",
     )
     
     translation_section_modifier: bpy.props.BoolProperty(
         name="translation_section_modifier",
         default=True,
-        description="翻译区域选择-modifier",
+        description="翻译区域-modifier",
     )
     
     translation_section_white_list: bpy.props.BoolProperty(
         name="translation_section_white_list",
         default=True,
-        description="翻译区域选择-white_list",
+        description="翻译区域-white_list",
     )
