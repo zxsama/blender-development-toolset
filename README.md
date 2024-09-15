@@ -23,12 +23,9 @@
 
 实时编译的双语翻译，支持语言和一定程度的格式定义，支持黑白名单添加或去除双语显示。
 
-![bilingual](./resource/img/bilingual.png)
-
 ### 功能演示
 
-<video src="./resource/img/demonstration .mp4"></video>
-
+[![](https://i1.hdslb.com/bfs/archive/a202ae2ffb7658ed204a9a5c9c4c4b1827ba53c7.jpg)](https://www.bilibili.com/video/BV15q42eEEmu/)
 
 
 ## Q&A
