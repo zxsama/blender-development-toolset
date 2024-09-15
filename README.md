@@ -25,8 +25,7 @@
 
 ### 功能演示
 
-[待添加]
-
+[![](https://i1.hdslb.com/bfs/archive/a202ae2ffb7658ed204a9a5c9c4c4b1827ba53c7.jpg)](https://www.bilibili.com/video/BV15q42eEEmu/)
 
 
 ## Q&A
