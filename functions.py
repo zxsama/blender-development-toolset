@@ -71,7 +71,7 @@ def wait_for_new_file(file_path, timestamp, timeout=None):
     """
     start_time = time.time()
     while True:
-        if os.path.exists(file_path) and os.path.getmtime(file_path) > timestamp:
+        if os.path.exists(file_path) and os.path.getctime(file_path) > timestamp:
             return True
         elif timeout is not None and (time.time() - start_time) > timeout:
             return False
