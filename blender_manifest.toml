@@ -2,7 +2,7 @@ schema_version = "1.0.0"
 
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
-id = "development_toolset"
+id = "mz_development_toolset"
 version = "0.5.1"
 name = "Development Toolset"
 tagline = "快捷工具, 快速重启, 双语切换, 双语翻译"
