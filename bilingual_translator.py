@@ -341,7 +341,7 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
             None, operation, sys.executable, parameter, None, 0
         )
         
-        wait_for_new_file(bili_mo_file, timestamp, timeout=10)
+        wait_for_new_file(bili_mo_file, timestamp, timeout=2)
         os.remove(tmp_po_file)
 
         context.preferences.view.language = BTD.locale_name
