@@ -3,14 +3,14 @@ import os
 from .functions import install_modul, launch_blender
 from .bilingual_translator import BilingualTranslatorData
 
-class UI_OT_Switch_ZH_EN(bpy.types.Operator):
+class UI_OT_Switch_Language(bpy.types.Operator):
     """
-    中英文切换
+    语言切换
     """
 
     bl_idname = "mz.zh_en_switch"
     bl_label = "zh/en Switch"
-    bl_description = "中英文切换"
+    bl_description = "语言切换"
     bl_options = {"UNDO"}
 
     def execute(self, context):
@@ -196,7 +196,7 @@ class MZ_HT_BarUI(bpy.types.Header):
         region = context.region
         custom_prop = context.scene.mz_custom_prop
         bar_button = context.scene.mz_bar_button
-        bar_button[UI_OT_Switch_ZH_EN.bl_idname][2] = context.preferences.view.language
+        bar_button[UI_OT_Switch_Language.bl_idname][2] = context.preferences.view.language
 
         addon_name = __package__
         prefs = context.preferences.addons[addon_name].preferences

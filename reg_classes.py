@@ -5,7 +5,7 @@ from .bilingual_translator import (
     MZ_OT_DeleteBilingualTranslator,
 )
 from .tool_bar import (
-    UI_OT_Switch_ZH_EN,
+    UI_OT_Switch_Language,
     UI_OT_OpenAddonPath,
     UI_OT_RestartBlender,
     UI_OT_RestartSavedBlender,
@@ -38,7 +38,7 @@ all_classes = [
     MZ_PT_MergeRender,
     MZ_HT_BarUI,
     MZ_OT_MergeRenderResultResponsive,
-    UI_OT_Switch_ZH_EN,
+    UI_OT_Switch_Language,
     UI_OT_OpenAddonPath,
     UI_OT_RestartBlender,
     UI_OT_RestartSavedBlender,
