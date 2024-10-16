@@ -17,7 +17,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
     enable_bar_buttons: bpy.props.BoolVectorProperty(
         name="enable_bar_buttons",
         size=bar_button_sum,
-        default=[True] * bar_button_sum,
+        default=[False, True, False, True, True],
         description="是否开启按钮的bool数组",
     )
 
