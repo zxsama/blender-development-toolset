@@ -77,6 +77,12 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
     bl_description = "保存当前工作区域后重启blender"
     bl_options = {"REGISTER"}
 
+    run_admin: bpy.props.BoolProperty(
+        name="run_admin",
+        description="是否以管理员权限重启(steam版不生效)",
+        default=False,
+    )
+
     def execute(self, context):
         # save
         if bpy.data.filepath:
@@ -89,7 +95,7 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
         bpy.ops.wm.save_as_mainfile(filepath=save_path, check_existing=False, copy=True)
 
         # launch and quit
-        launch_blender(save_path)
+        launch_blender(file_path=save_path, is_admin=self.run_admin)
         self.report({"INFO"}, "重启Blender")
         bpy.ops.wm.quit_blender()
 
@@ -106,9 +112,15 @@ class UI_OT_RestartBlender(bpy.types.Operator):
     bl_description = "重启打开全新的blender"
     bl_options = {"REGISTER"}
 
+    run_admin: bpy.props.BoolProperty(
+        name="run_admin",
+        description="是否以管理员权限重启(steam版不生效)",
+        default=False,
+    )
+
     def execute(self, context):
         # launch and quit
-        launch_blender()
+        launch_blender(is_admin=self.run_admin)
         self.report({"INFO"}, "重启Blender")
         bpy.ops.wm.quit_blender()
 
