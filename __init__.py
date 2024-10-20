@@ -1,3 +1,16 @@
+bl_info = {
+    "name": "MZ Development Toolset",
+    "author": "MIZI",
+    "version": (0, 5, 3),
+    "blender": (3, 3, 0),
+    "location": "Right Topbar",
+    "description": "快捷工具, 快速重启, 双语切换, 双语翻译",
+    "wiki_url": "https://github.com/zxsama/blender-development-toolset",
+    "doc_url": "https://github.com/zxsama/blender-development-toolset",
+    "tracker_url": "https://github.com/zxsama/blender-development-toolset/issues",
+    "category": "Development",
+}
+
 import os
 import bpy
 import bpy.utils.previews

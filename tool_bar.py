@@ -1,7 +1,10 @@
 import bpy
 import os
+
+from .cross_version_support import language_zh_code
 from .functions import install_modul, launch_blender
 from .bilingual_translator import BilingualTranslatorData
+
 
 class UI_OT_Switch_Language(bpy.types.Operator):
     """
@@ -19,7 +22,7 @@ class UI_OT_Switch_Language(bpy.types.Operator):
         # 切换双语
         BTD = BilingualTranslatorData()
         _, bil_mo_file = BTD.get_bilingual_mo_path()
-        lang_code = "zh_HANS"
+        lang_code = language_zh_code()
         if os.path.exists(bil_mo_file):
             lang_code = BTD.locale_name
             
