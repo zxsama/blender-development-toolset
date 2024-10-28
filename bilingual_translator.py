@@ -11,6 +11,7 @@ from .lib.bilingual_tools import register as bil_reg
 from .lib.bilingual_tools import remove as bil_remove
 from .lib.bilingual_tools import complie as bil_complie
 
+
 class BilingualTranslatorData:
     def __init__(self):
         self.lang_idx = 99
@@ -24,7 +25,7 @@ class BilingualTranslatorData:
         return self.locale
 
     def get_cfg_append_data(self):
-        return f"\n{self.lang_idx}:{self.menu_name}:{self.locale_name}"
+        return f"{self.lang_idx}:{self.menu_name}:{self.locale_name}"
 
     def get_cfg_file(self):
         return os.path.join(self.locale, "languages")
@@ -42,7 +43,7 @@ class BilingualTranslatorData:
     def get_blacklist_path(self):
         addon_path = os.path.dirname(__file__)
         return os.path.join(addon_path, "resource", "bilingual_translator", "blacklist")
-    
+
     def admin_required(self):
         cfg_file = self.get_cfg_file()
         required = False
@@ -53,6 +54,20 @@ class BilingualTranslatorData:
         else:
             f.close()
         return required
+
+    def get_bilingual_init_state(self):
+        bil_mo_folder, _ = self.get_bilingual_mo_path()
+        if os.path.exists(bil_mo_folder):
+            return True
+        else:
+            return False
+
+    def get_bilingual_compile_state(self):
+        _, bil_mo_file = self.get_bilingual_mo_path()
+        if os.path.exists(bil_mo_file):
+            return True
+        else:
+            return False
 
 
 class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
@@ -75,7 +90,7 @@ class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
         mo_floder, _ = BTD.get_bilingual_mo_path()
 
         pyf_register = bil_reg.__file__
-        parameter = f'"{pyf_register}" -file "{cfg_file}" -data "{cfg_append_data}" -mo_floder "{mo_floder}"'
+        parameter = f'"{pyf_register}" -file "{cfg_file}" -data "\n{cfg_append_data}" -mo_floder "{mo_floder}"'
         operation = "runas" if BTD.admin_required() else "open"
         ctypes.windll.shell32.ShellExecuteW(
             None, operation, sys.executable, parameter, None, 0
@@ -322,16 +337,16 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
                 entry.msgstr = self.merge_txt(
                     entry.msgstr, entry.msgid, is_translation_preceding
                 )
-                
+
         # 保存为po文件
         addon_dir = os.path.dirname(__file__)
         tmp_po_file = os.path.join(addon_dir, "saved", "blender.po")
         translation_data.save_as_pofile(tmp_po_file)
-        
+
         # 使用msgfmt.exe转换po文件, 比直接polib save更快
         gettext_tools = os.path.join(addon_dir, "lib", "gettext_tools")
         msgfmt = os.path.join(gettext_tools, "msgfmt.exe")
-        
+
         # 可能需要管理员权限
         timestamp = time.time()
         pyf_compile = bil_complie.__file__
@@ -340,14 +355,22 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         ctypes.windll.shell32.ShellExecuteW(
             None, operation, sys.executable, parameter, None, 0
         )
-        
+
         wait_for_new_file(bili_mo_file, timestamp, timeout=2)
         os.remove(tmp_po_file)
 
+        # 显示双语
         context.preferences.view.language = BTD.locale_name
+        tool_bar_props = context.scene.mz_tool_bar_props
+        if not (
+            tool_bar_props.switch_lang_slot2 == "1"
+            or tool_bar_props.switch_lang_slot3 == "1"
+        ):
+            tool_bar_props.switch_lang_slot2 = "1"  # 语言切换中的双语索引
         context.preferences.view.use_translate_new_dataname = False
         self.report({"INFO"}, "双语翻译已生成")
         return {"FINISHED"}
+
 
 # exe速度更快
 # gettext_tools = os.path.join(os.path.dirname(__file__), "lib","gettext_tools")
@@ -377,14 +400,21 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
         mo_floder, _ = BTD.get_bilingual_mo_path()
 
         context.preferences.view.language = "en_US"
-        
+
         pyf_remove = bil_remove.__file__
-        parameter = f'"{pyf_remove}" -file "{cfg_file}" -data "{cfg_append_data}" -mo_floder "{mo_floder}"'
+        parameter = f'"{pyf_remove}" -file "{cfg_file}" -data "\n{cfg_append_data}" -mo_floder "{mo_floder}"'
         operation = "runas" if BTD.admin_required() else "open"
         ctypes.windll.shell32.ShellExecuteW(
             None, operation, sys.executable, parameter, None, 0
         )
-        
+
+        # 恢复语言切换, "0:空, 1:双语索引, 15:简中索引"
+        tool_bar_props = context.scene.mz_tool_bar_props
+        if tool_bar_props.switch_lang_slot2 == "1":
+            tool_bar_props.switch_lang_slot2 = "15"
+        if tool_bar_props.switch_lang_slot3 == "1":
+            tool_bar_props.switch_lang_slot3 = "0"
+
         self.report({"INFO"}, "双语翻译已删除")
         bpy.ops.mz.restart_saved_blender()
         return {"FINISHED"}

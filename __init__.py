@@ -1,7 +1,7 @@
 bl_info = {
     "name": "MZ Development Toolset",
     "author": "MIZI",
-    "version": (0, 5, 3),
+    "version": (0, 5, 4),
     "blender": (3, 3, 0),
     "location": "Right Topbar",
     "description": "快捷工具, 快速重启, 双语切换, 双语翻译",
@@ -18,6 +18,7 @@ from . import reg_classes as rc
 
 MZ_CUSTOMICONS = None
 
+
 def register():
     # class
     for cls in rc.all_classes:
@@ -28,11 +29,14 @@ def register():
     bpy.types.Scene.mz_bilingual_translator_prop = bpy.props.PointerProperty(
         type=rc.MZ_BilingualTranslatorProps
     )
+    bpy.types.Scene.mz_tool_bar_props = bpy.props.PointerProperty(
+        type=rc.MZ_ToolBarProps
+    )
 
     # custom icon
     global MZ_CUSTOMICONS
     MZ_CUSTOMICONS = bpy.utils.previews.new()
-    icons_dir = os.path.join(os.path.dirname(__file__),"resource", "icons", "torbar")
+    icons_dir = os.path.join(os.path.dirname(__file__), "resource", "icons", "torbar")
     icons = os.listdir(icons_dir)
     for icon in icons:
         icon_name = os.path.splitext(icon)[0]
