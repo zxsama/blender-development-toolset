@@ -18,6 +18,7 @@ from . import reg_classes as rc
 
 MZ_CUSTOMICONS = None
 
+
 def register():
     # class
     for cls in rc.all_classes:
@@ -35,7 +36,7 @@ def register():
     # custom icon
     global MZ_CUSTOMICONS
     MZ_CUSTOMICONS = bpy.utils.previews.new()
-    icons_dir = os.path.join(os.path.dirname(__file__),"resource", "icons", "torbar")
+    icons_dir = os.path.join(os.path.dirname(__file__), "resource", "icons", "torbar")
     icons = os.listdir(icons_dir)
     for icon in icons:
         icon_name = os.path.splitext(icon)[0]
