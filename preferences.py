@@ -29,7 +29,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         row = row.split(factor=0.3)
         
         bar_button = context.scene.mz_bar_button
-        mz_tool_bar_props = context.scene.mz_tool_bar_props
+        tool_bar_props = context.scene.mz_tool_bar_props
         box_btn_qucik = row.column(align=True)
         box_btn_qucik.box().label(text="快捷按键显示/关闭")
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
@@ -40,9 +40,9 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         sub_flow.use_property_split = True
         sub_flow.use_property_decorate = False
         sub_flow_row = sub_flow.row(align=True)
-        sub_flow_row.prop(mz_tool_bar_props, "switch_lang_slot1", text="")  
-        sub_flow_row.prop(mz_tool_bar_props, "switch_lang_slot2", text="")  
-        sub_flow_row.prop(mz_tool_bar_props, "switch_lang_slot3", text="")  
+        sub_flow_row.prop(tool_bar_props, "switch_lang_slot1", text="")  
+        sub_flow_row.prop(tool_bar_props, "switch_lang_slot2", text="")  
+        sub_flow_row.prop(tool_bar_props, "switch_lang_slot3", text="")  
         
         
         bili_trans_prop = context.scene.mz_bilingual_translator_prop

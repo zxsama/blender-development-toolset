@@ -19,25 +19,24 @@ class UI_OT_Switch_Language(bpy.types.Operator):
 
         language_items = MZ_ToolBarProps.get_lang_items_callback(self, context)
         tool_bar_props = context.scene.mz_tool_bar_props
-        language_codes = [
-            setting_lng.LANGUAGES[int(tool_bar_props.switch_lang_slot1)][2],
-            language_items[int(tool_bar_props.switch_lang_slot2)][2],
-            language_items[int(tool_bar_props.switch_lang_slot3)][2],
-        ]
-
+        code1 = setting_lng.LANGUAGES[int(tool_bar_props.switch_lang_slot1)][2]
+        code2 = language_items[int(tool_bar_props.switch_lang_slot2)][2]
+        code3 = language_items[int(tool_bar_props.switch_lang_slot3)][2]
+        language_codes = [code1, code2, code3]
+        language_codes = list(set(language_codes))
         current_lan = context.preferences.view.language
 
         try:
             current_idx = language_codes.index(current_lan)
-            next_language = language_codes[(current_idx + 1) % 3]
+            next_language = language_codes[(current_idx + 1) % len(language_codes)]
             while next_language == "":
                 current_idx += 1
-                next_language = language_codes[current_idx % 3]
+                next_language = language_codes[current_idx % len(language_codes)]
             context.preferences.view.language = next_language
             if not current_lan == "en_US":
                 context.preferences.view.use_translate_new_dataname = False
         except:
-            context.preferences.view.language = language_codes[0]
+            context.preferences.view.language = code1
 
         return {"FINISHED"}
 

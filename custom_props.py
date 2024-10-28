@@ -4,13 +4,6 @@ from .bilingual_translator import BilingualTranslatorData
 
 
 class MZ_ToolBarProps(bpy.types.PropertyGroup):
-
-    switch_lang_slot1: bpy.props.EnumProperty(
-        items=[(str(i[0]), i[1], i[2]) for i in setting_lng.LANGUAGES],
-        name="语言切换1",
-        default=1,
-    )
-
     def get_lang_items_callback(self, context):
         # ["0:无", "1:双语", LANGUAGES]
         languages = list(setting_lng.LANGUAGES)
@@ -24,6 +17,12 @@ class MZ_ToolBarProps(bpy.types.PropertyGroup):
         default = ("0", "无", "")
         languages.insert(0, default)
         return languages
+
+    switch_lang_slot1: bpy.props.EnumProperty(
+        items=[(str(i[0]), i[1], i[2]) for i in setting_lng.LANGUAGES],
+        name="语言切换1",
+        default=1,
+    )
 
     switch_lang_slot2: bpy.props.EnumProperty(
         items=get_lang_items_callback,
