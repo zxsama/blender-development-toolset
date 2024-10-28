@@ -1,9 +1,8 @@
 import bpy
 import os
-
-from .cross_version_support import language_zh_code
 from .functions import install_modul, launch_blender
-from .bilingual_translator import BilingualTranslatorData
+from .custom_props import MZ_ToolBarProps
+import bl_i18n_utils.settings as setting_lng
 
 
 class UI_OT_Switch_Language(bpy.types.Operator):
@@ -11,26 +10,35 @@ class UI_OT_Switch_Language(bpy.types.Operator):
     语言切换
     """
 
-    bl_idname = "mz.zh_en_switch"
-    bl_label = "zh/en Switch"
+    bl_idname = "mz.language_switch"
+    bl_label = "language Switch"
     bl_description = "语言切换"
     bl_options = {"UNDO"}
 
     def execute(self, context):
-        lan = context.preferences.view.language
-        
-        # 切换双语
-        BTD = BilingualTranslatorData()
-        _, bil_mo_file = BTD.get_bilingual_mo_path()
-        lang_code = language_zh_code()
-        if os.path.exists(bil_mo_file):
-            lang_code = BTD.locale_name
-            
-        if lan == "en_US":
-            context.preferences.view.language = lang_code
-            context.preferences.view.use_translate_new_dataname = False
-        else:
-            context.preferences.view.language = "en_US"
+
+        language_items = MZ_ToolBarProps.get_lang_items_callback(self, context)
+        tool_bar_props = context.scene.mz_tool_bar_props
+        language_codes = [
+            setting_lng.LANGUAGES[int(tool_bar_props.switch_lang_slot1)][2],
+            language_items[int(tool_bar_props.switch_lang_slot2)][2],
+            language_items[int(tool_bar_props.switch_lang_slot3)][2],
+        ]
+
+        current_lan = context.preferences.view.language
+
+        try:
+            current_idx = language_codes.index(current_lan)
+            next_language = language_codes[(current_idx + 1) % 3]
+            while next_language == "":
+                current_idx += 1
+                next_language = language_codes[current_idx % 3]
+            context.preferences.view.language = next_language
+            if not current_lan == "en_US":
+                context.preferences.view.use_translate_new_dataname = False
+        except:
+            context.preferences.view.language = language_codes[0]
+
         return {"FINISHED"}
 
 

@@ -13,6 +13,7 @@ from .tool_bar import (
     MZ_HT_BarUI,
 )
 from .custom_props import (
+    MZ_ToolBarProps,
     MZ_BilingualTranslatorProps,
 )
 
@@ -20,6 +21,7 @@ from .preferences import MZ_Preferences
 
 all_classes = [
     MZ_Preferences,
+    MZ_ToolBarProps,
     MZ_BilingualTranslatorProps,
     MZ_HT_BarUI,
     UI_OT_Switch_Language,

@@ -28,6 +28,9 @@ def register():
     bpy.types.Scene.mz_bilingual_translator_prop = bpy.props.PointerProperty(
         type=rc.MZ_BilingualTranslatorProps
     )
+    bpy.types.Scene.mz_tool_bar_props = bpy.props.PointerProperty(
+        type=rc.MZ_ToolBarProps
+    )
 
     # custom icon
     global MZ_CUSTOMICONS
