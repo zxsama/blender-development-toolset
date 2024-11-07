@@ -9,7 +9,7 @@ class UI_OT_Switch_Language(bpy.types.Operator):
     """
 
     bl_idname = "mz.language_switch"
-    bl_label = "language Switch"
+    bl_label = "Language Switch"
     bl_description = trs.pgettext_tip("Language Switch")
     bl_options = {"UNDO"}
 
@@ -33,11 +33,11 @@ class UI_OT_Switch_Language(bpy.types.Operator):
                 current_idx += 1
                 next_language = language_codes[current_idx % len(language_codes)]
             context.preferences.view.language = next_language
-            if not current_lan == "en_US":
-                context.preferences.view.use_translate_new_dataname = False
         except:
             context.preferences.view.language = code1
-
+            
+        context.preferences.view.use_translate_new_dataname = False
+            
         return {"FINISHED"}
 
 
@@ -47,7 +47,7 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
     """
 
     bl_idname = "mz.open_addon_path"
-    bl_label = "open user addon folder"
+    bl_label = "Open Addon Path"
     bl_description = trs.pgettext_tip("Open the addon folder where the current addon is located")
 
     def execute(self, context):
@@ -83,7 +83,7 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
     """
 
     bl_idname = "mz.restart_saved_blender"
-    bl_label = "save&restart blender"
+    bl_label = "Save&Restart Blender"
     bl_description = trs.pgettext_tip("Save the current workspace and restart Blender")
     bl_options = {"REGISTER"}
 
@@ -118,7 +118,7 @@ class UI_OT_RestartBlender(bpy.types.Operator):
     """
 
     bl_idname = "mz.restart_blender"
-    bl_label = "restart blender"
+    bl_label = "Restart Blender"
     bl_description = trs.pgettext_tip("Restart and open a new Blender")
     bl_options = {"REGISTER"}
 
@@ -143,7 +143,7 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
     """
 
     bl_idname = "mz.console_toggle_custom"
-    bl_label = "console_toggle"
+    bl_label = "Console Toggle"
     bl_description = trs.pgettext_tip("Console Pin to Top")
     bl_options = {"REGISTER"}
 
