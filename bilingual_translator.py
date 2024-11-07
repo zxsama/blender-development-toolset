@@ -266,15 +266,17 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         addon_prefs = preferences.addons[__package__].preferences 
         bilingual_lang_idx = int(addon_prefs.bilingual_lang)
         language_code = setting_lng.LANGUAGES[bilingual_lang_idx][2]
-        
+
         # 重新注册插件翻译, 匹配双语语言, 暂时只有中文
         addon_prefs.bilingual_lang_code_current = language_code
+        from .translations import translations
         if language_code == setting_lng.LANGUAGES[13][2]:
-            from .translations import translations
             translations["bilingual"] = translations[setting_lng.LANGUAGES[13][2]]
-            bpy.app.translations.unregister(__name__)
-            bpy.app.translations.register(__name__, translations)
-        
+        else:
+            translations["bilingual"] = {}
+        bpy.app.translations.unregister(__name__)
+        bpy.app.translations.register(__name__, translations)
+
         self.custom_delimiter = addon_prefs.custom_delimiter
         is_translation_preceding = int(addon_prefs.is_translation_preceding[0])
         translation_section_all = addon_prefs.translation_section_all
