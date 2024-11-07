@@ -6,6 +6,7 @@ from .bilingual_translator import (BilingualTranslatorData,
                                    MZ_OT_OpenBilingualBlackWhiteList,
                                    MZ_OT_DeleteBilingualTranslator,
                                     )
+import bl_i18n_utils.settings as setting_lng
 
 
 bar_button_sum = 5
@@ -20,6 +21,38 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         default=[False, True, False, True, True],
         description="是否开启按钮的bool数组",
     )
+    
+    def get_lang_items_callback(self, context):
+        # ["0:无", "1:双语", LANGUAGES]
+        languages = list(setting_lng.LANGUAGES)
+        BTD = BilingualTranslatorData()
+        languages = [(str(i[0] + 2), i[1], i[2]) for i in languages]
+        if BTD.get_bilingual_compile_state():
+            bilingual = ("1", BTD.menu_name, BTD.locale_name)
+        else:
+            bilingual = ("1", "[PlaceHolder]", languages[1][2])
+        languages.insert(0, bilingual)
+        default = ("0", "无", "")
+        languages.insert(0, default)
+        return languages
+
+    switch_lang_slot1: bpy.props.EnumProperty(
+        items=[(str(i[0]), i[1], i[2]) for i in setting_lng.LANGUAGES],
+        name="语言切换1",
+        default=1,
+    )
+
+    switch_lang_slot2: bpy.props.EnumProperty(
+        items=get_lang_items_callback,
+        name="语言切换2",
+        default=15,  # 13 offset 2
+    )
+
+    switch_lang_slot3: bpy.props.EnumProperty(
+        items=get_lang_items_callback,
+        name="语言切换3",
+        default=0,
+    )
 
     def draw(self, context):
         layout = self.layout
@@ -29,7 +62,6 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         row = row.split(factor=0.3)
         
         bar_button = context.scene.mz_bar_button
-        tool_bar_props = context.scene.mz_tool_bar_props
         box_btn_qucik = row.column(align=True)
         box_btn_qucik.box().label(text="快捷按键显示/关闭")
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
@@ -40,9 +72,9 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         sub_flow.use_property_split = True
         sub_flow.use_property_decorate = False
         sub_flow_row = sub_flow.row(align=True)
-        sub_flow_row.prop(tool_bar_props, "switch_lang_slot1", text="")  
-        sub_flow_row.prop(tool_bar_props, "switch_lang_slot2", text="")  
-        sub_flow_row.prop(tool_bar_props, "switch_lang_slot3", text="")  
+        sub_flow_row.prop(self, "switch_lang_slot1", text="")  
+        sub_flow_row.prop(self, "switch_lang_slot2", text="")  
+        sub_flow_row.prop(self, "switch_lang_slot3", text="")  
         
         
         bili_trans_prop = context.scene.mz_bilingual_translator_prop

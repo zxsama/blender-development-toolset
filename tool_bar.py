@@ -1,7 +1,6 @@
 import bpy
 import os
 from .functions import install_modul, launch_blender
-from .custom_props import MZ_ToolBarProps
 import bl_i18n_utils.settings as setting_lng
 
 
@@ -17,11 +16,13 @@ class UI_OT_Switch_Language(bpy.types.Operator):
 
     def execute(self, context):
 
-        language_items = MZ_ToolBarProps.get_lang_items_callback(self, context)
-        tool_bar_props = context.scene.mz_tool_bar_props
-        code1 = setting_lng.LANGUAGES[int(tool_bar_props.switch_lang_slot1)][2]
-        code2 = language_items[int(tool_bar_props.switch_lang_slot2)][2]
-        code3 = language_items[int(tool_bar_props.switch_lang_slot3)][2]
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__package__].preferences
+        language_items = addon_prefs.get_lang_items_callback(context)
+
+        code1 = setting_lng.LANGUAGES[int(addon_prefs.switch_lang_slot1)][2]
+        code2 = language_items[int(addon_prefs.switch_lang_slot2)][2]
+        code3 = language_items[int(addon_prefs.switch_lang_slot3)][2]
         language_codes = [code1, code2, code3]
         language_codes = list(set(language_codes))
         current_lan = context.preferences.view.language
@@ -213,11 +214,13 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
 
 class MZ_HT_BarUI(bpy.types.Header):
     bl_space_type = "TOPBAR"
-    
+
     def draw(self, context):
         region = context.region
         bar_button = context.scene.mz_bar_button
-        bar_button[UI_OT_Switch_Language.bl_idname][2] = context.preferences.view.language
+        bar_button[UI_OT_Switch_Language.bl_idname][
+            2
+        ] = context.preferences.view.language
 
         addon_name = __package__
         prefs = context.preferences.addons[addon_name].preferences
