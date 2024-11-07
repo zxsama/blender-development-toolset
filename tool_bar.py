@@ -24,7 +24,7 @@ class UI_OT_Switch_Language(bpy.types.Operator):
         code2 = language_items[int(addon_prefs.switch_lang_slot2)][2]
         code3 = language_items[int(addon_prefs.switch_lang_slot3)][2]
         language_codes = [code1, code2, code3]
-        language_codes = list(set(language_codes))
+        language_codes = list(dict.fromkeys(language_codes))
         current_lan = context.preferences.view.language
 
         try:
