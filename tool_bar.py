@@ -33,11 +33,11 @@ class UI_OT_Switch_Language(bpy.types.Operator):
                 current_idx += 1
                 next_language = language_codes[current_idx % len(language_codes)]
             context.preferences.view.language = next_language
-            if not current_lan == "en_US":
-                context.preferences.view.use_translate_new_dataname = False
         except:
             context.preferences.view.language = code1
-
+            
+        context.preferences.view.use_translate_new_dataname = False
+            
         return {"FINISHED"}
 
 
