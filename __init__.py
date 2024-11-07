@@ -45,16 +45,28 @@ def register():
     buildin_icons = bpy.types.UILayout.bl_rna.functions["prop"].parameters["icon"].enum_items.items()
     icon_dict = {tup[1].identifier : tup[1].value for tup in buildin_icons}
     bar_button = {
-        rc.UI_OT_ConsoleToggle.bl_idname: ["控制台置顶", icon_dict["CONSOLE"], ""],
-        rc.UI_OT_RestartSavedBlender.bl_idname: ["保存并重启Blender",MZ_CUSTOMICONS["SAVE_RE_BLENDER"].icon_id,""],
-        rc.UI_OT_RestartBlender.bl_idname: ["重启全新Blender", MZ_CUSTOMICONS["RE_BLENDER"].icon_id, ""],
-        rc.UI_OT_OpenAddonPath.bl_idname: ["打开插件路径", MZ_CUSTOMICONS["ADDON_FLODER"].icon_id, ""],
-        rc.UI_OT_Switch_Language.bl_idname: ["语言切换", icon_dict["WORDWRAP_ON"], ""],
+        rc.UI_OT_ConsoleToggle.bl_idname: ["Console Pin to Top", icon_dict["CONSOLE"], ""],
+        rc.UI_OT_RestartSavedBlender.bl_idname: ["Save and Restart Blender",MZ_CUSTOMICONS["SAVE_RE_BLENDER"].icon_id,""],
+        rc.UI_OT_RestartBlender.bl_idname: ["Restart Fresh Blender", MZ_CUSTOMICONS["RE_BLENDER"].icon_id, ""],
+        rc.UI_OT_OpenAddonPath.bl_idname: ["Open Addon Path", MZ_CUSTOMICONS["ADDON_FLODER"].icon_id, ""],
+        rc.UI_OT_Switch_Language.bl_idname: ["Language Switch", icon_dict["WORDWRAP_ON"], ""],
     }
     bpy.types.Scene.mz_bar_button = bar_button
 
+    # translate
+    preferences = bpy.context.preferences
+    addon_prefs = preferences.addons[__package__].preferences
+    from .translations import translations
+    import bl_i18n_utils.settings as setting_lng
+    # 匹配双语语言, 暂时只有中文
+    if addon_prefs.bilingual_lang_code_current == setting_lng.LANGUAGES[13][2]:
+        translations["bilingual"] = translations[setting_lng.LANGUAGES[13][2]]
+    bpy.app.translations.register(__name__, translations)
+    
 
 def unregister():
+
+    bpy.app.translations.unregister(__name__)
 
     global MZ_CUSTOMICONS
     bpy.utils.previews.remove(MZ_CUSTOMICONS)

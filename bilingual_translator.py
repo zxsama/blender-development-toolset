@@ -5,6 +5,7 @@ import time
 import bpy
 import os
 import bl_i18n_utils.settings as setting_lng
+import bpy.app.translations as trs
 from .lib import polib
 from .functions import wait_for_new_file
 from .lib.bilingual_tools import register as bil_reg
@@ -72,13 +73,13 @@ class BilingualTranslatorData:
 
 class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
     bl_idname = "mz.register_bilingual_translator"
-    bl_label = "注册双语翻译(自动重启)"
-    bl_description = "Data required for bilingual translation registration"
+    bl_label = "Register Bilingual Translation (Auto Restart)"
+    bl_description = trs.pgettext_tip("Data required for bilingual translation registration")
     bl_options = {"REGISTER", "UNDO"}
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text="将会重启blender")
+        layout.label(text="Blender Will Restart")
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -96,15 +97,15 @@ class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
             None, operation, sys.executable, parameter, None, 0
         )
 
-        self.report({"INFO"}, "双语翻译已注册")
+        self.report({"INFO"}, "Bilingual Translation Registered")
         bpy.ops.mz.restart_saved_blender()
         return {"FINISHED"}
 
 
 class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
     bl_idname = "mz.generate_bilingual_translator"
-    bl_label = "生成双语翻译"
-    bl_description = "Generate bilingual translation"
+    bl_label = "Generate Bilingual Translation"
+    bl_description = trs.pgettext_tip("Generate Bilingual Translation")
     bl_options = {"REGISTER"}
 
     def merge_txt(self, txt, append_txt, swap):
@@ -266,6 +267,14 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         bilingual_lang_idx = int(addon_prefs.bilingual_lang)
         language_code = setting_lng.LANGUAGES[bilingual_lang_idx][2]
         
+        # 重新注册插件翻译, 匹配双语语言, 暂时只有中文
+        addon_prefs.bilingual_lang_code_current = language_code
+        if language_code == setting_lng.LANGUAGES[13][2]:
+            from .translations import translations
+            translations["bilingual"] = translations[setting_lng.LANGUAGES[13][2]]
+            bpy.app.translations.unregister(__name__)
+            bpy.app.translations.register(__name__, translations)
+        
         self.custom_delimiter = addon_prefs.custom_delimiter
         is_translation_preceding = int(addon_prefs.is_translation_preceding[0])
         translation_section_all = addon_prefs.translation_section_all
@@ -283,7 +292,7 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
             language_code = language_code.split("_")[0]
             ori_lang_folder = os.path.join(locale_folder, language_code)
             if not os.path.exists(ori_lang_folder):
-                self.report({"WARNING"}, "不存在对应语言包!")
+                self.report({"WARNING"}, "The corresponding language pack does not exist!")
                 return {"FINISHED"}
         ori_lang_mo = os.path.join(ori_lang_folder, "LC_MESSAGES", "blender.mo")
         translation_data = polib.mofile(ori_lang_mo, wrapwidth=180)
@@ -371,7 +380,7 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         ):
             addon_prefs.switch_lang_slot2 = "1"  # 语言切换中的双语索引
         context.preferences.view.use_translate_new_dataname = False
-        self.report({"INFO"}, "双语翻译已生成")
+        self.report({"INFO"}, "Bilingual Translation Generated")
         return {"FINISHED"}
 
 
@@ -385,13 +394,13 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
 
 class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
     bl_idname = "mz.delete_bilingual_translator"
-    bl_label = "删除双语翻译"
-    bl_description = "Delete bilingual translation"
+    bl_label = "Delete Bilingual Translation"
+    bl_description = trs.pgettext_tip("Delete Bilingual Translation")
     bl_options = {"REGISTER"}
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text="将会重启blender")
+        layout.label(text="Blender Will Restart")
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -419,21 +428,21 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
         if addon_prefs.switch_lang_slot3 == "1":
             addon_prefs.switch_lang_slot3 = "0"
 
-        self.report({"INFO"}, "双语翻译已删除")
+        self.report({"INFO"}, "Bilingual Translation Deleted")
         bpy.ops.mz.restart_saved_blender()
         return {"FINISHED"}
 
 
 class MZ_OT_OpenBilingualBlackWhiteList(bpy.types.Operator):
     bl_idname = "mz.open_bilingual_black_white_list"
-    bl_label = "双语翻译 黑/白名单"
-    bl_description = "Edit black/whitelist"
+    bl_label = "Open Bilingual Translation Blacklist/Whitelist"
+    bl_description = trs.pgettext_tip("Edit black/whitelist")
     bl_options = {"REGISTER", "UNDO"}
 
     list_type: bpy.props.BoolProperty(
         name="list_type",
         default=True,
-        description="True:白名单, False:黑名单",
+        description="True: Whitelist, False: Blacklist",
     )  # type: ignore
 
     def invoke(self, context, event):
@@ -447,9 +456,9 @@ class MZ_OT_OpenBilingualBlackWhiteList(bpy.types.Operator):
         list_name = os.path.basename(list_file)
         for text in bpy.data.texts:
             if text.filepath == list_file:
-                self.report({"INFO"}, f"参见文本编辑器中的 '{list_name}'")
+                self.report({"INFO"}, trs.pgettext("See '%s' in the text editor") % list_name)
                 return {"FINISHED"}
         text = bpy.data.texts.load(list_file)
 
-        self.report({"INFO"}, f"参见文本编辑器中的 '{list_name}'")
+        self.report({"INFO"}, trs.pgettext("See '%s' in the text editor") % list_name)
         return {"FINISHED"}

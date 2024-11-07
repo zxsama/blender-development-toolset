@@ -7,7 +7,7 @@ from .bilingual_translator import (BilingualTranslatorData,
                                    MZ_OT_DeleteBilingualTranslator,
                                     )
 import bl_i18n_utils.settings as setting_lng
-
+import bpy.app.translations as trs
 
 bar_button_sum = 5
 class MZ_Preferences(bpy.types.AddonPreferences):
@@ -88,6 +88,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         default="",
     )
     
+    # 语言切换
     def get_lang_items_callback(self, context):
         # ["0:无", "1:双语", LANGUAGES]
         languages = list(setting_lng.LANGUAGES)
@@ -98,25 +99,25 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         else:
             bilingual = ("1", "[PlaceHolder]", languages[1][2])
         languages.insert(0, bilingual)
-        default = ("0", "无", "")
+        default = ("0", "None", "")
         languages.insert(0, default)
         return languages
 
     switch_lang_slot1: bpy.props.EnumProperty(
         items=[(str(i[0]), i[1], i[2]) for i in setting_lng.LANGUAGES],
-        name="语言切换1",
+        name="Language Switch 1",
         default=1,
     )
 
     switch_lang_slot2: bpy.props.EnumProperty(
         items=get_lang_items_callback,
-        name="语言切换2",
+        name="Language Switch 2",
         default=15,  # 13 offset 2
     )
 
     switch_lang_slot3: bpy.props.EnumProperty(
         items=get_lang_items_callback,
-        name="语言切换3",
+        name="Language Switch 3",
         default=0,
     )
 
@@ -129,12 +130,12 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         
         bar_button = context.scene.mz_bar_button
         box_btn_qucik = row.column(align=True)
-        box_btn_qucik.box().label(text="快捷按键显示/关闭")
+        box_btn_qucik.box().label(text="Show/Hide Shortcut Keys")
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
         for index, (_, value) in enumerate(bar_button.items()):
             sub_flow.prop(self, "enable_bar_buttons", index=index, text=value[0])
         sub_flow = box_btn_qucik.box().grid_flow(columns=1, align=True)
-        sub_flow.label(text="语言切换项")
+        sub_flow.label(text="Language Switch Option")
         sub_flow.use_property_split = True
         sub_flow.use_property_decorate = False
         sub_flow_row = sub_flow.row(align=True)
@@ -143,7 +144,7 @@ class MZ_Preferences(bpy.types.AddonPreferences):
         sub_flow_row.prop(self, "switch_lang_slot3", text="")  
         
         box_trans = row.column(align=True)
-        box_trans.box().label(text="双语翻译")
+        box_trans.box().label(text="Bilingual Translation")
         sub_flow = box_trans.grid_flow(columns=1, align=True)
         sub_flow.use_property_split = True
         sub_flow.use_property_decorate = False
@@ -182,10 +183,10 @@ class MZ_Preferences(bpy.types.AddonPreferences):
             btn_flow.scale_y = 1.75
             btn_flow_row = btn_flow.row()
             btn_flow_row = btn_flow_row.split(factor=0.9, align=True)
-            btn_flow_row.operator(MZ_OT_GenerateBilingualTranslator.bl_idname, text="编译双语翻译", icon="FILE_REFRESH")
+            btn_flow_row.operator(MZ_OT_GenerateBilingualTranslator.bl_idname, text="Compile Bilingual Translation", icon="FILE_REFRESH")
             btn_flow_row.operator(MZ_OT_DeleteBilingualTranslator.bl_idname, text="", icon="TRASH")
         else:
             
             btn_flow = sub_flow.box()
             btn_flow.scale_y = 1.5
-            btn_flow.operator(MZ_OT_RegisterBilingualTranslator.bl_idname, text="双语翻译初始化(自动重启)")
+            btn_flow.operator(MZ_OT_RegisterBilingualTranslator.bl_idname, text="Bilingual Translation Initialization (Auto Restart)")
