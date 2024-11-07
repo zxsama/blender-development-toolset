@@ -261,19 +261,21 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         locale_folder = BTD.get_locale_floder()
         whitelist_file = BTD.get_whitelist_path()
         blacklist_file = BTD.get_blacklist_path()
-        bili_trans_prop = context.scene.mz_bilingual_translator_prop
-        bilingual_lang_idx = int(bili_trans_prop.bilingual_lang)
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__package__].preferences 
+        bilingual_lang_idx = int(addon_prefs.bilingual_lang)
         language_code = setting_lng.LANGUAGES[bilingual_lang_idx][2]
-        self.custom_delimiter = bili_trans_prop.custom_delimiter
-        is_translation_preceding = int(bili_trans_prop.is_translation_preceding[0])
-        translation_section_all = bili_trans_prop.translation_section_all
-        translation_section_node = bili_trans_prop.translation_section_node
+        
+        self.custom_delimiter = addon_prefs.custom_delimiter
+        is_translation_preceding = int(addon_prefs.is_translation_preceding[0])
+        translation_section_all = addon_prefs.translation_section_all
+        translation_section_node = addon_prefs.translation_section_node
         translation_section_node_property = (
-            bili_trans_prop.translation_section_node_property
+            addon_prefs.translation_section_node_property
         )
-        translation_section_modifier = bili_trans_prop.translation_section_modifier
-        translation_section_whitelist = bili_trans_prop.translation_section_whitelist
-        translation_section_blacklist = bili_trans_prop.translation_section_blacklist
+        translation_section_modifier = addon_prefs.translation_section_modifier
+        translation_section_whitelist = addon_prefs.translation_section_whitelist
+        translation_section_blacklist = addon_prefs.translation_section_blacklist
 
         # 获取mo数据
         ori_lang_folder = os.path.join(locale_folder, language_code)
@@ -361,12 +363,13 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
 
         # 显示双语
         context.preferences.view.language = BTD.locale_name
-        tool_bar_props = context.scene.mz_tool_bar_props
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__package__].preferences
         if not (
-            tool_bar_props.switch_lang_slot2 == "1"
-            or tool_bar_props.switch_lang_slot3 == "1"
+            addon_prefs.switch_lang_slot2 == "1"
+            or addon_prefs.switch_lang_slot3 == "1"
         ):
-            tool_bar_props.switch_lang_slot2 = "1"  # 语言切换中的双语索引
+            addon_prefs.switch_lang_slot2 = "1"  # 语言切换中的双语索引
         context.preferences.view.use_translate_new_dataname = False
         self.report({"INFO"}, "双语翻译已生成")
         return {"FINISHED"}
@@ -409,11 +412,12 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
         )
 
         # 恢复语言切换, "0:空, 1:双语索引, 15:简中索引"
-        tool_bar_props = context.scene.mz_tool_bar_props
-        if tool_bar_props.switch_lang_slot2 == "1":
-            tool_bar_props.switch_lang_slot2 = "15"
-        if tool_bar_props.switch_lang_slot3 == "1":
-            tool_bar_props.switch_lang_slot3 = "0"
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__package__].preferences
+        if addon_prefs.switch_lang_slot2 == "1":
+            addon_prefs.switch_lang_slot2 = "15"
+        if addon_prefs.switch_lang_slot3 == "1":
+            addon_prefs.switch_lang_slot3 = "0"
 
         self.report({"INFO"}, "双语翻译已删除")
         bpy.ops.mz.restart_saved_blender()
