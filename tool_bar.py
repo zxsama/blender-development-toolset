@@ -1,10 +1,8 @@
 import bpy
 import os
 from .functions import install_modul, launch_blender
-from .custom_props import MZ_ToolBarProps
 import bl_i18n_utils.settings as setting_lng
-
-
+import bpy.app.translations as trs
 class UI_OT_Switch_Language(bpy.types.Operator):
     """
     语言切换
@@ -12,18 +10,20 @@ class UI_OT_Switch_Language(bpy.types.Operator):
 
     bl_idname = "mz.language_switch"
     bl_label = "language Switch"
-    bl_description = "语言切换"
+    bl_description = trs.pgettext_tip("Language Switch")
     bl_options = {"UNDO"}
 
     def execute(self, context):
 
-        language_items = MZ_ToolBarProps.get_lang_items_callback(self, context)
-        tool_bar_props = context.scene.mz_tool_bar_props
-        code1 = setting_lng.LANGUAGES[int(tool_bar_props.switch_lang_slot1)][2]
-        code2 = language_items[int(tool_bar_props.switch_lang_slot2)][2]
-        code3 = language_items[int(tool_bar_props.switch_lang_slot3)][2]
+        preferences = context.preferences
+        addon_prefs = preferences.addons[__package__].preferences
+        language_items = addon_prefs.get_lang_items_callback(context)
+
+        code1 = setting_lng.LANGUAGES[int(addon_prefs.switch_lang_slot1)][2]
+        code2 = language_items[int(addon_prefs.switch_lang_slot2)][2]
+        code3 = language_items[int(addon_prefs.switch_lang_slot3)][2]
         language_codes = [code1, code2, code3]
-        language_codes = list(set(language_codes))
+        language_codes = list(dict.fromkeys(language_codes))
         current_lan = context.preferences.view.language
 
         try:
@@ -48,7 +48,7 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
 
     bl_idname = "mz.open_addon_path"
     bl_label = "open user addon folder"
-    bl_description = "打开当前插件所在的插件文件夹"
+    bl_description = trs.pgettext_tip("Open the addon folder where the current addon is located")
 
     def execute(self, context):
 
@@ -84,12 +84,12 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
 
     bl_idname = "mz.restart_saved_blender"
     bl_label = "save&restart blender"
-    bl_description = "保存当前工作区域后重启blender"
+    bl_description = trs.pgettext_tip("Save the current workspace and restart Blender")
     bl_options = {"REGISTER"}
 
     run_admin: bpy.props.BoolProperty(
         name="run_admin",
-        description="是否以管理员权限重启(steam版不生效)",
+        description="Whether to restart with administrator (not effective for Steam version)",
         default=False,
     )
 
@@ -106,7 +106,7 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
 
         # launch and quit
         launch_blender(file_path=save_path, is_admin=self.run_admin)
-        self.report({"INFO"}, "重启Blender")
+        self.report({"INFO"}, "Restart Blender")
         bpy.ops.wm.quit_blender()
 
         return {"FINISHED"}
@@ -119,19 +119,19 @@ class UI_OT_RestartBlender(bpy.types.Operator):
 
     bl_idname = "mz.restart_blender"
     bl_label = "restart blender"
-    bl_description = "重启打开全新的blender"
+    bl_description = trs.pgettext_tip("Restart and open a new Blender")
     bl_options = {"REGISTER"}
 
     run_admin: bpy.props.BoolProperty(
         name="run_admin",
-        description="是否以管理员权限重启(steam版不生效)",
+        description="Whether to restart with administrator (not effective for Steam version)",
         default=False,
     )
 
     def execute(self, context):
         # launch and quit
         launch_blender(is_admin=self.run_admin)
-        self.report({"INFO"}, "重启Blender")
+        self.report({"INFO"}, "Restart Blender")
         bpy.ops.wm.quit_blender()
 
         return {"FINISHED"}
@@ -144,7 +144,7 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
 
     bl_idname = "mz.console_toggle_custom"
     bl_label = "console_toggle"
-    bl_description = "控制台置顶"
+    bl_description = trs.pgettext_tip("Console Pin to Top")
     bl_options = {"REGISTER"}
 
     @classmethod
@@ -153,7 +153,7 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
 
     def draw(self, context):
         layout = self.layout
-        layout.label(text="第一次使用需要安装pywin32库, 确认安装并重启")
+        layout.label(text="The first use requires installing the pywin32 library\nconfirm installation and restart.")
 
     def invoke(self, context, event):
         try:
@@ -213,11 +213,13 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
 
 class MZ_HT_BarUI(bpy.types.Header):
     bl_space_type = "TOPBAR"
-    
+
     def draw(self, context):
         region = context.region
         bar_button = context.scene.mz_bar_button
-        bar_button[UI_OT_Switch_Language.bl_idname][2] = context.preferences.view.language
+        bar_button[UI_OT_Switch_Language.bl_idname][
+            2
+        ] = context.preferences.view.language
 
         addon_name = __package__
         prefs = context.preferences.addons[addon_name].preferences

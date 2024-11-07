@@ -15,7 +15,7 @@ website = "https://github.com/zxsama/blender-development-toolset"
 
 # Optional list defined by Blender and server, see:
 # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
-tags = ["Development"]
+tags = ["User Interface", "Development"]
 
 blender_version_min = "4.2.0"
 # # Optional: Blender version that the extension does not support, earlier versions are supported.
