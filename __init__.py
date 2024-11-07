@@ -78,3 +78,4 @@ def unregister():
 
     del bpy.types.Scene.mz_bar_button
     del bpy.types.Scene.mz_bilingual_translator_prop
+    del bpy.types.Scene.mz_tool_bar_props
