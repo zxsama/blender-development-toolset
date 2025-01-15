@@ -19,8 +19,15 @@ class BilingualTranslatorData:
         self.menu_name = "Bilingual (双语显示)"
         self.locale_name = "bilingual"
         bl_res_path = bpy.utils.resource_path("LOCAL")
-        data_files = os.path.join(bl_res_path, "datafiles")
-        self.locale = os.path.join(data_files, "locale")
+        user_res_path = bpy.utils.resource_path("USER")
+
+        # 如果有用户配置, 首选用户配置路径(用于兼容BLT插件)
+        bl_locale = os.path.join(bl_res_path, "datafiles", "locale")
+        user_locale = os.path.join(user_res_path, "datafiles", "locale")
+        if os.path.exists(user_locale):
+            self.locale = user_locale
+        else:
+            self.locale = bl_locale
 
     def get_locale_floder(self):
         return self.locale
