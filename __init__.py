@@ -1,7 +1,7 @@
 bl_info = {
     "name": "MZ Development Toolset",
     "author": "MIZI",
-    "version": (0, 5, 5),
+    "version": (0, 5, 6),
     "blender": (3, 3, 0),
     "location": "Right Topbar",
     "description": "快捷工具, 快速重启, 双语切换, 双语翻译",
