@@ -377,7 +377,10 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         )
 
         wait_for_new_file(bili_mo_file, timestamp, timeout=2)
-        os.remove(tmp_po_file)
+        try:
+            os.remove(tmp_po_file)
+        except Exception as e:
+            print(f"临时文件清理失败：{str(e)}")  # 不删也不影响
 
         # 显示双语
         context.preferences.view.language = BTD.locale_name
