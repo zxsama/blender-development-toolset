@@ -1,8 +1,11 @@
+import tempfile
 import bpy
 import os
 from .functions import install_modul, launch_blender
 import bl_i18n_utils.settings as setting_lng
 import bpy.app.translations as trs
+
+
 class UI_OT_Switch_Language(bpy.types.Operator):
     """
     语言切换
@@ -95,11 +98,12 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
 
     def execute(self, context):
         # save
-        if bpy.data.filepath:
+        if bpy.data.filepath and os.path.exists(bpy.data.filepath):
             save_path = bpy.data.filepath
         else:
             # tmp save
-            save_path = os.path.join(os.path.dirname(__file__), r"saved\temp.blend")
+            tmp_dir = tempfile.mkdtemp() # 会残存垃圾文件
+            save_path = os.path.join(tmp_dir, r"bl_temp.blend")
             if os.path.exists(save_path):
                 os.remove(save_path)
         bpy.ops.wm.save_as_mainfile(filepath=save_path, check_existing=False, copy=True)
