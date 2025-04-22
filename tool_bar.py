@@ -1,3 +1,4 @@
+import sys
 import tempfile
 import bpy
 import os
@@ -147,8 +148,8 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
     """
 
     bl_idname = "mz.console_toggle_custom"
-    bl_label = "Console Toggle"
-    bl_description = trs.pgettext_tip("Console Pin to Top")
+    bl_label = "Console Toggle(Only Windows)"
+    bl_description = trs.pgettext_tip("Console Pin to Top(Only Windows)")
     bl_options = {"REGISTER"}
 
     @classmethod
@@ -160,12 +161,16 @@ class UI_OT_ConsoleToggle(bpy.types.Operator):
         layout.label(text="The first use requires installing the pywin32 library\nconfirm installation and restart.")
 
     def invoke(self, context, event):
-        try:
-            import win32gui, win32process, win32con
 
-            return self.execute(context)
-        except ImportError:
-            return context.window_manager.invoke_props_dialog(self)
+        if sys.platform == "win32":
+            try:
+                import win32gui, win32process, win32con
+
+                return self.execute(context)
+            except ImportError:
+                return context.window_manager.invoke_props_dialog(self)
+        else:
+            return {"FINISHED"}
 
     def execute(self, context):
         try:
