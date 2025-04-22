@@ -22,13 +22,11 @@ class BilingualTranslatorData:
         bl_res_path = bpy.utils.resource_path("LOCAL")
         user_res_path = bpy.utils.resource_path("USER")
 
-        # 如果有用户配置, 首选用户配置路径(用于兼容BLT插件)
+        # 首选用户配置路径
         bl_locale = os.path.join(bl_res_path, "datafiles", "locale")
         user_locale = os.path.join(user_res_path, "datafiles", "locale")
-        if os.path.exists(user_locale):
-            self.locale = user_locale
-        else:
-            self.locale = bl_locale
+        self.res_locale = bl_locale
+        self.locale = user_locale
 
     def get_locale_floder(self):
         return self.locale
@@ -94,6 +92,7 @@ class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
 
     def execute(self, context):
         BTD = BilingualTranslatorData()
+        shutil.copytree(BTD.res_locale, BTD.locale, dirs_exist_ok=True)
         cfg_file = BTD.get_cfg_file()
         cfg_append_data = BTD.get_cfg_append_data()
         mo_floder, _ = BTD.get_bilingual_mo_path()
@@ -423,9 +422,20 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
     bl_description = trs.pgettext_tip("Delete Bilingual Translation")
     bl_options = {"REGISTER"}
 
+    clear_user_config: bpy.props.BoolProperty(
+        name="clear_user_config",
+        default=False,
+        description="",
+    )
+
     def draw(self, context):
         layout = self.layout
         layout.label(text="Blender Will Restart")
+        layout.prop(
+            self,
+            "clear_user_config",
+            text="Delete user translation settings (may affect other translation addon)",
+        )
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
