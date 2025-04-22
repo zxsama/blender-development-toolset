@@ -24,16 +24,16 @@ class VersionPlatformManager:
             )
 
         elif sys.platform == "darwin":
-            args = [program_path]
+            command = [program_path]
             if parameter:
-                args.extend(parameter)
+                command.extend(parameter)
             # if needs_admin:
             #     # 把参数列表转成带引号的字符串，用 shlex 处理特殊字符
-            #     quoted_args = [f'"{arg}"' for arg in args]
+            #     quoted_args = [f'"{arg}"' for arg in command]
             #     cmd = f'do shell script "{" ".join(quoted_args)}" with administrator privileges'
             #     subprocess.Popen(["osascript", "-e", cmd])
             # else:
-            subprocess.Popen(args)
+            subprocess.Popen(command)
 
         elif sys.platform.startswith("linux"):
             # command = ["pkexec", program_path] if needs_admin else [program_path]
