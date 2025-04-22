@@ -1,9 +1,10 @@
-# 不需要翻译的语句
-# 黑名单的优先级最高
-# 每行一条
-# 使用英文名称
-# 注意大小写
-# 记得保存(Alt+S)
+# 不需要翻译的语句 | Statements that do not require translation  
+# 黑名单的优先级最高 | Blacklist has the highest priority  
+# 每行一条 | One per line  
+# 使用英文名称 | Use English names  
+# 注意大小写 | Pay attention to capitalization  
+# 记得保存(Alt+S) | Remember to save (Alt+S)
+
 
 Object
 Node
