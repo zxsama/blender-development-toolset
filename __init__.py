@@ -1,10 +1,10 @@
 bl_info = {
-    "name": "MZ Development Toolset",
+    "name": "Bilingual Translation Toolkit",
     "author": "MIZI",
     "version": (0, 6, 0),
     "blender": (3, 3, 0),
     "location": "Right Topbar",
-    "description": "快捷工具, 快速重启, 双语切换, 双语翻译",
+    "description": "Bilingual Translation Interface, Language Switching, Quick Restart",
     "wiki_url": "https://github.com/zxsama/blender-development-toolset",
     "doc_url": "https://github.com/zxsama/blender-development-toolset",
     "tracker_url": "https://github.com/zxsama/blender-development-toolset/issues",
@@ -62,7 +62,7 @@ def register():
     if addon_prefs.bilingual_lang_code_current == setting_lng.LANGUAGES[13][2]:
         translations["bilingual"] = translations[setting_lng.LANGUAGES[13][2]]
     bpy.app.translations.register(__name__, translations)
-    
+
 
 def unregister():
 

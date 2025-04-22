@@ -2,10 +2,10 @@ schema_version = "1.0.0"
 
 # Example of manifest file for a Blender extension
 # Change the values according to your extension
-id = "mz_development_toolset"
+id = "bilingual_translation_toolkit"
 version = "0.6.0"
-name = "MZ Development Toolset"
-tagline = "快捷工具, 快速重启, 双语切换, 双语翻译"
+name = "Bilingual Translation Toolkit"
+tagline = "Bilingual Translation Interface, Language Switching, Quick Restart"
 maintainer = "MIZI <zxsamazero@163.com>"
 # Supported types: "add-on", "theme"
 type = "add-on"
@@ -58,9 +58,9 @@ license = [
 # # Keep this a single short sentence without a period (.) at the end.
 # # For longer explanations use the documentation or detail page.
 #
-# [permissions]
+[permissions]
 # network = "Need to sync motion-capture data to server"
-# files = "Import/export FBX from/to disk"
+files = "For encoding and decoding files and saving temporary files"
 # clipboard = "Copy and paste bone transforms"
 
 # Optional: build settings.
