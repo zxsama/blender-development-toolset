@@ -64,25 +64,6 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
         return {"FINISHED"}
 
 
-# class UI_OT_ReloadAddon(bpy.types.Operator):
-#     """
-#     刷新插件，不会刷新已导入模块的全局字典
-#     """
-
-#     bl_idname = "wm.reload_addon"
-#     bl_label = "reload addon"
-#     bl_description = "刷新插件"
-#     bl_options = {"REGISTER"}
-
-#     def execute(self, context):
-#         # module_reload() #TODO
-#         bpy.ops.preferences.addon_refresh()
-#         bpy.ops.script.reload()
-
-#         self.report({"INFO"}, "插件刷新完成")
-#         return {"FINISHED"}
-
-
 class UI_OT_RestartSavedBlender(bpy.types.Operator):
     """
     保存并重启blender (保存当前工作区域, 基于当前blender窗口路径打开保存的blender文件)

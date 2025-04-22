@@ -408,14 +408,6 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         return {"FINISHED"}
 
 
-# exe速度更快
-# gettext_tools = os.path.join(os.path.dirname(__file__), "lib","gettext_tools")
-# msgfmt = os.path.join(gettext_tools,"msgfmt.exe")
-# msgunfmt = os.path.join(gettext_tools, "msgunfmt.exe")
-# decode_mo2po = [f"{msgunfmt} blender.mo -o blender.po"]
-# encode_po2mo = [f"{msgfmt} blender.po -o blender.mo"]
-
-
 class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
     bl_idname = "mz.delete_bilingual_translator"
     bl_label = "Delete Bilingual Translation"
