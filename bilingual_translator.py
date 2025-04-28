@@ -1,17 +1,18 @@
-import ctypes
 import re
+import shutil
 import sys
 import time
 import bpy
 import os
 import bl_i18n_utils.settings as setting_lng
 import bpy.app.translations as trs
+from tempfile import TemporaryDirectory
 from .lib import polib
 from .functions import wait_for_new_file
 from .lib.bilingual_tools import register as bil_reg
 from .lib.bilingual_tools import remove as bil_remove
 from .lib.bilingual_tools import complie as bil_complie
-
+from .cross_version_support import VersionPlatformManager as VP_Manager
 
 class BilingualTranslatorData:
     def __init__(self):
@@ -21,13 +22,11 @@ class BilingualTranslatorData:
         bl_res_path = bpy.utils.resource_path("LOCAL")
         user_res_path = bpy.utils.resource_path("USER")
 
-        # 如果有用户配置, 首选用户配置路径(用于兼容BLT插件)
+        # 首选用户配置路径
         bl_locale = os.path.join(bl_res_path, "datafiles", "locale")
         user_locale = os.path.join(user_res_path, "datafiles", "locale")
-        if os.path.exists(user_locale):
-            self.locale = user_locale
-        else:
-            self.locale = bl_locale
+        self.res_locale = bl_locale
+        self.locale = user_locale
 
     def get_locale_floder(self):
         return self.locale
@@ -93,16 +92,23 @@ class MZ_OT_RegisterBilingualTranslator(bpy.types.Operator):
 
     def execute(self, context):
         BTD = BilingualTranslatorData()
+        shutil.copytree(BTD.res_locale, BTD.locale, dirs_exist_ok=True)
         cfg_file = BTD.get_cfg_file()
         cfg_append_data = BTD.get_cfg_append_data()
         mo_floder, _ = BTD.get_bilingual_mo_path()
 
         pyf_register = bil_reg.__file__
-        parameter = f'"{pyf_register}" -file "{cfg_file}" -data "\n{cfg_append_data}" -mo_floder "{mo_floder}"'
-        operation = "runas" if BTD.admin_required() else "open"
-        ctypes.windll.shell32.ShellExecuteW(
-            None, operation, sys.executable, parameter, None, 0
-        )
+        parameter = [
+            pyf_register,
+            "-file",
+            cfg_file,
+            "-data",
+            f"\n{cfg_append_data}",
+            "-mo_floder",
+            mo_floder,
+        ]
+        VPM = VP_Manager()
+        VPM.run_command(BTD.admin_required(), parameter)
 
         self.report({"INFO"}, "Bilingual Translation Registered")
         bpy.ops.mz.restart_saved_blender()
@@ -359,25 +365,34 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
                 )
 
         # 保存为po文件
-        addon_dir = os.path.dirname(__file__)
-        tmp_po_file = os.path.join(addon_dir, "saved", "blender.po")
-        translation_data.save_as_pofile(tmp_po_file)
+        if sys.platform == "win32":
+            with TemporaryDirectory() as tmp_po_dir:
+                tmp_po_file = os.path.join(tmp_po_dir, "blender.po")
+                translation_data.save_as_pofile(tmp_po_file)
 
-        # 使用msgfmt.exe转换po文件, 比直接polib save更快
-        gettext_tools = os.path.join(addon_dir, "lib", "gettext_tools")
-        msgfmt = os.path.join(gettext_tools, "msgfmt.exe")
+                # 使用msgfmt.exe转换po文件, 比直接polib save更快
+                addon_dir = os.path.dirname(__file__)
+                gettext_tools = os.path.join(addon_dir, "lib", "gettext_tools")
+                msgfmt = os.path.join(gettext_tools, "msgfmt.exe")
 
-        # 可能需要管理员权限
-        timestamp = time.time()
-        pyf_compile = bil_complie.__file__
-        parameter = f'"{pyf_compile}" -po "{tmp_po_file}" -mo "{bili_mo_file}" -msgfmt "{msgfmt}"'
-        operation = "runas" if BTD.admin_required() else "open"
-        ctypes.windll.shell32.ShellExecuteW(
-            None, operation, sys.executable, parameter, None, 0
-        )
+                # 可能需要管理员权限
+                timestamp = time.time()
+                pyf_compile = bil_complie.__file__
+                parameter = [
+                    pyf_compile,
+                    "-po",
+                    tmp_po_file,
+                    "-mo",
+                    bili_mo_file,
+                    "-msgfmt",
+                    msgfmt,
+                ]
+                VPM = VP_Manager()
+                VPM.run_command(BTD.admin_required(), parameter)
 
-        wait_for_new_file(bili_mo_file, timestamp, timeout=2)
-        os.remove(tmp_po_file)
+                wait_for_new_file(bili_mo_file, timestamp, timeout=2)
+        else:# fallback
+            translation_data.save(bili_mo_file)
 
         # 显示双语
         context.preferences.view.language = BTD.locale_name
@@ -393,23 +408,26 @@ class MZ_OT_GenerateBilingualTranslator(bpy.types.Operator):
         return {"FINISHED"}
 
 
-# exe速度更快
-# gettext_tools = os.path.join(os.path.dirname(__file__), "lib","gettext_tools")
-# msgfmt = os.path.join(gettext_tools,"msgfmt.exe")
-# msgunfmt = os.path.join(gettext_tools, "msgunfmt.exe")
-# decode_mo2po = [f"{msgunfmt} blender.mo -o blender.po"]
-# encode_po2mo = [f"{msgfmt} blender.po -o blender.mo"]
-
-
 class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
     bl_idname = "mz.delete_bilingual_translator"
     bl_label = "Delete Bilingual Translation"
     bl_description = trs.pgettext_tip("Delete Bilingual Translation")
     bl_options = {"REGISTER"}
 
+    clear_user_config: bpy.props.BoolProperty(
+        name="clear_user_config",
+        default=False,
+        description="",
+    )
+
     def draw(self, context):
         layout = self.layout
         layout.label(text="Blender Will Restart")
+        layout.prop(
+            self,
+            "clear_user_config",
+            text="Delete user translation settings (may affect other translation addon)",
+        )
 
     def invoke(self, context, event):
         return context.window_manager.invoke_props_dialog(self)
@@ -423,11 +441,19 @@ class MZ_OT_DeleteBilingualTranslator(bpy.types.Operator):
         context.preferences.view.language = "en_US"
 
         pyf_remove = bil_remove.__file__
-        parameter = f'"{pyf_remove}" -file "{cfg_file}" -data "\n{cfg_append_data}" -mo_floder "{mo_floder}"'
-        operation = "runas" if BTD.admin_required() else "open"
-        ctypes.windll.shell32.ShellExecuteW(
-            None, operation, sys.executable, parameter, None, 0
-        )
+        if self.clear_user_config:
+            mo_floder = BTD.locale # 用户翻译文件的主目录
+        parameter = [
+            pyf_remove,
+            "-file",
+            cfg_file,
+            "-data",
+            f"\n{cfg_append_data}",
+            "-mo_floder", 
+            mo_floder,
+        ]
+        VPM = VP_Manager()
+        VPM.run_command(BTD.admin_required(), parameter)
 
         # 恢复语言切换, "0:空, 1:双语索引, 15:简中索引"
         preferences = context.preferences

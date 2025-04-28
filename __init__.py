@@ -1,10 +1,10 @@
 bl_info = {
-    "name": "MZ Development Toolset",
+    "name": "Bilingual Translation Toolkit",
     "author": "MIZI",
-    "version": (0, 5, 6),
+    "version": (0, 6, 0),
     "blender": (3, 3, 0),
     "location": "Right Topbar",
-    "description": "快捷工具, 快速重启, 双语切换, 双语翻译",
+    "description": "Bilingual Translation Interface, Language Switching, Quick Restart",
     "wiki_url": "https://github.com/zxsama/blender-development-toolset",
     "doc_url": "https://github.com/zxsama/blender-development-toolset",
     "tracker_url": "https://github.com/zxsama/blender-development-toolset/issues",
@@ -45,7 +45,7 @@ def register():
     buildin_icons = bpy.types.UILayout.bl_rna.functions["prop"].parameters["icon"].enum_items.items()
     icon_dict = {tup[1].identifier : tup[1].value for tup in buildin_icons}
     bar_button = {
-        rc.UI_OT_ConsoleToggle.bl_idname: ["Console Pin to Top", icon_dict["CONSOLE"], ""],
+        rc.UI_OT_ConsoleToggle.bl_idname: ["Console Pin to Top(Only Windows)", icon_dict["CONSOLE"], ""],
         rc.UI_OT_RestartSavedBlender.bl_idname: ["Save and Restart Blender",MZ_CUSTOMICONS["SAVE_RE_BLENDER"].icon_id,""],
         rc.UI_OT_RestartBlender.bl_idname: ["Restart Fresh Blender", MZ_CUSTOMICONS["RE_BLENDER"].icon_id, ""],
         rc.UI_OT_OpenAddonPath.bl_idname: ["Open Addon Path", MZ_CUSTOMICONS["ADDON_FLODER"].icon_id, ""],
@@ -62,7 +62,7 @@ def register():
     if addon_prefs.bilingual_lang_code_current == setting_lng.LANGUAGES[13][2]:
         translations["bilingual"] = translations[setting_lng.LANGUAGES[13][2]]
     bpy.app.translations.register(__name__, translations)
-    
+
 
 def unregister():
 

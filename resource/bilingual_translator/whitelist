@@ -1,8 +1,9 @@
-# 需要翻译的语句
-# 每行一条
-# 使用英文名称
-# 注意大小写
-# 记得保存(Alt+S)
+# 需要翻译的语句 | Statements to be translated
+# 每行一条 | One per line
+# 使用英文名称 | Use English names
+# 注意大小写 | Pay attention to capitalization
+# 记得保存(Alt+S) | Remember to save (Alt+S)
+
 
 # Modifier
 Generate
@@ -10,6 +11,18 @@ Deform
 Normals
 Physics
 Unassigned
+Texture Mapping
+Time Offset
+Vertex Weight Angle
+Dot Dash
+Envelope
+Line Art
+Multiple Strokes
+Outline
+Simplify
+Subdivide
+Saturation
+Opacity
 
 # Math
 Multiply Add

@@ -1,8 +1,14 @@
+import sys
+import tempfile
 import bpy
 import os
-from .functions import install_modul, launch_blender
+import ctypes
 import bl_i18n_utils.settings as setting_lng
 import bpy.app.translations as trs
+from ctypes import wintypes
+from .functions import launch_blender
+
+
 class UI_OT_Switch_Language(bpy.types.Operator):
     """
     语言切换
@@ -58,25 +64,6 @@ class UI_OT_OpenAddonPath(bpy.types.Operator):
         return {"FINISHED"}
 
 
-# class UI_OT_ReloadAddon(bpy.types.Operator):
-#     """
-#     刷新插件，不会刷新已导入模块的全局字典
-#     """
-
-#     bl_idname = "wm.reload_addon"
-#     bl_label = "reload addon"
-#     bl_description = "刷新插件"
-#     bl_options = {"REGISTER"}
-
-#     def execute(self, context):
-#         # module_reload() #TODO
-#         bpy.ops.preferences.addon_refresh()
-#         bpy.ops.script.reload()
-
-#         self.report({"INFO"}, "插件刷新完成")
-#         return {"FINISHED"}
-
-
 class UI_OT_RestartSavedBlender(bpy.types.Operator):
     """
     保存并重启blender (保存当前工作区域, 基于当前blender窗口路径打开保存的blender文件)
@@ -95,11 +82,12 @@ class UI_OT_RestartSavedBlender(bpy.types.Operator):
 
     def execute(self, context):
         # save
-        if bpy.data.filepath:
+        if bpy.data.filepath and os.path.exists(bpy.data.filepath):
             save_path = bpy.data.filepath
         else:
             # tmp save
-            save_path = os.path.join(os.path.dirname(__file__), r"saved\temp.blend")
+            tmp_dir = tempfile.mkdtemp() # 会残存垃圾文件
+            save_path = os.path.join(tmp_dir, r"bl_temp.blend")
             if os.path.exists(save_path):
                 os.remove(save_path)
         bpy.ops.wm.save_as_mainfile(filepath=save_path, check_existing=False, copy=True)
@@ -139,74 +127,71 @@ class UI_OT_RestartBlender(bpy.types.Operator):
 
 class UI_OT_ConsoleToggle(bpy.types.Operator):
     """
-    切换系统控制台窗口, 无论窗口状态, 点击就会将窗口前置
+    切换系统控制台窗口, 无论窗口状态, 点击就会将窗口前置一次
     """
 
     bl_idname = "mz.console_toggle_custom"
-    bl_label = "Console Toggle"
-    bl_description = trs.pgettext_tip("Console Pin to Top")
+    bl_label = "Console Toggle(Only Windows)"
+    bl_description = trs.pgettext_tip("Console Pin to Top(Only Windows)")
     bl_options = {"REGISTER"}
 
     @classmethod
     def poll(cls, context):
-        return True
+        
+        if sys.platform == "win32":
+            return True
+        else:
+            return False
 
-    def draw(self, context):
-        layout = self.layout
-        layout.label(text="The first use requires installing the pywin32 library\nconfirm installation and restart.")
-
-    def invoke(self, context, event):
-        try:
-            import win32gui, win32process, win32con
-
-            return self.execute(context)
-        except ImportError:
-            return context.window_manager.invoke_props_dialog(self)
+    console_handles: bpy.props.IntProperty(
+        name="console_handles",
+        default=0,
+        description="Store window handle",
+    )
 
     def execute(self, context):
-        try:
-            # pywin32
-            import win32gui, win32process, win32con
-        except ImportError:
-            install_modul(self, "pywin32")
-            bpy.ops.mz.restart_saved_blender()
-            return {"CANCELLED"}
+        user32 = ctypes.WinDLL('user32')
+        kernel32 = ctypes.WinDLL('kernel32')
 
-        hWnd_all_list = []
-        console_handle_list = []
-        true_console_handle = None
+        # 类型定义
+        WNDENUMPROC = ctypes.WINFUNCTYPE(wintypes.BOOL, wintypes.HWND, wintypes.LPARAM)
+        user32.GetWindowThreadProcessId.argtypes = [wintypes.HWND, ctypes.POINTER(wintypes.DWORD)]
+        user32.GetWindowThreadProcessId.restype = wintypes.DWORD
 
-        # get blender path
-        blender_handle = win32gui.GetForegroundWindow()
-        blender_TID, blender_PID = win32process.GetWindowThreadProcessId(blender_handle)
-        blender_path = bpy.app.binary_path
+        # 获取当前进程 ID
+        current_pid = kernel32.GetCurrentProcessId()
+        
+        def enum_windows_proc(hwnd, lParam):
+            length = user32.GetWindowTextLengthW(hwnd)
+            if length > 0:
+                buff = ctypes.create_unicode_buffer(length + 1)
+                user32.GetWindowTextW(hwnd, buff, length + 1)
 
-        # find all blender console
-        win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), hWnd_all_list)
-        for hwnd in hWnd_all_list:
-            h_title = win32gui.GetWindowText(hwnd)
-            if h_title == blender_path:
-                console_handle_list.append(hwnd)
+                if buff.value == bpy.app.binary_path:
+                    pid = wintypes.DWORD()
+                    tid = user32.GetWindowThreadProcessId(hwnd, ctypes.byref(pid))  # 获取进程ID,不能删
+                    if pid.value == current_pid:
+                        self.console_handles = hwnd
+                        return False
+            return True
 
-        # find current blender console
-        for handle in console_handle_list:
-            _, console_blender_PID = win32process.GetWindowThreadProcessId(handle)
-            if console_blender_PID == blender_PID:
-                true_console_handle = handle
-
-        # Show Window
-        if true_console_handle is None:
+        # 仅第一次切换控制台
+        if not self.console_handles:
             bpy.ops.wm.console_toggle()
+
+        # 枚举所有窗口
+        enum_func = WNDENUMPROC(enum_windows_proc)
+        user32.EnumWindows(enum_func, 0)
+
+        if self.console_handles:
+            # 强制窗口置顶组合技
+            user32.ShowWindow(self.console_handles, 9)  # 先恢复
+            user32.SetWindowPos(
+                self.console_handles, -1, 0, 0, 0, 0, 0x0003
+            )  # HWND_TOPMOST|SWP_NOMOVE|SWP_NOSIZE
+            user32.SetForegroundWindow(self.console_handles)
         else:
-            # 先激活一次, 让blender设置console窗口状态
             bpy.ops.wm.console_toggle()
-            win32gui.ShowWindow(true_console_handle, win32con.SW_SHOW)
-            if win32gui.IsIconic(true_console_handle):
-                win32gui.ShowWindow(true_console_handle, 9)  # 9:win32con.SW_RESTORE
-            win32gui.SetForegroundWindow(true_console_handle)
-
-        hWnd_all_list.clear()
-        console_handle_list.clear()
 
         return {"FINISHED"}
 
