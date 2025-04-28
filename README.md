@@ -1,10 +1,22 @@
-# blender-development-toolset
+# BilingualTranslationToolkit
 
-一个blender的便捷工具集，目前支持快速重启、中英切换、双语翻译。
+一个用于blender的双语界面显示的工具集。
 
-> 支持Win、Linux、Mac下的Blender, 版本号 ≥ 3.3
+> 支持Win、Linux、Mac, blender版本号 ≥ 3.3
 
 ![preview](./resource/img/preview.png)
+
+## 双语界面翻译
+
+从Blender原有翻译文件编译的双语界面，支持Blender内置的大多数语言和一定程度的格式定义，也支持对单个词语的黑、白名单。
+
+![change_lang](./resource/img/change_lang.webp)
+
+> 初次使用：
+>   1. 安装插件
+>   2. 点击插件设置中的 `双语翻译初始化` 按钮
+>   3. 等待blender自动重启
+>   4. 再次点击插件设置中的 `双语翻译编译` 按钮
 
 ## 快捷按键：
 
@@ -18,16 +30,6 @@
 - 重启全新Blender
 - 打开插件路径
 - 语言切换
-
-## 双语翻译
-
-实时编译的双语翻译，支持语言和一定程度的格式定义，支持黑白名单添加或去除双语显示。
-
-> 初次使用：
->   1. 安装插件
->   2. 点击插件设置中的 `双语翻译初始化` 按钮
->   3. 等待blender自动重启
->   4. 再次点击插件设置中的 `双语翻译编译` 按钮
 
 ### 功能演示
 
