@@ -1,6 +1,6 @@
 # BilingualTranslationToolkit
 
-[ZH](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README.md)|[EN](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README_EN.md)
+[ZH](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README.md) | [EN](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README_EN.md)
 
 一个用于blender的双语界面显示的工具集。
 

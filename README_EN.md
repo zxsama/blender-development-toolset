@@ -1,6 +1,6 @@
 # Bilingual Translation Toolkit
 
-[ZH](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README.md)|[EN](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README_EN.md)
+[ZH](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README.md) | [EN](https://github.com/zxsama/BilingualTranslationToolkit/blob/main/README_EN.md)
 
 A toolkit for displaying bilingual interfaces in Blender.
 
