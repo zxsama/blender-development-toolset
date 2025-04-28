@@ -2,7 +2,7 @@
 
 一个blender的便捷工具集，目前支持快速重启、中英切换、双语翻译。
 
-> 目前仅支持Windows下的Blender, 版本号 ≥ 3.3
+> 支持Win、Linux、Mac下的Blender, 版本号 ≥ 3.3
 
 ![preview](./resource/img/preview.png)
 
