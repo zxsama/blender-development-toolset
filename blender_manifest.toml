@@ -5,13 +5,13 @@ schema_version = "1.0.0"
 id = "bilingual_translation_toolkit"
 version = "0.6.0"
 name = "Bilingual Translation Toolkit"
-tagline = "Bilingual Translation Interface, Language Switching, Quick Restart"
+tagline = "Bilingual Translation Interface, Quick Restart"
 maintainer = "MIZI <zxsamazero@163.com>"
 # Supported types: "add-on", "theme"
 type = "add-on"
 
 # Optional link to documentation, support, source files, etc
-website = "https://github.com/zxsama/blender-development-toolset"
+website = "https://github.com/zxsama/BilingualTranslationToolkit"
 
 # Optional list defined by Blender and server, see:
 # https://docs.blender.org/manual/en/dev/advanced/extensions/tags.html
